@@ -1,9 +1,5 @@
 import { Module } from '@nestjs/common';
-import {
-  AcceptLanguageResolver,
-  I18nJsonLoader,
-  I18nModule,
-} from 'nestjs-i18n';
+import { AcceptLanguageResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

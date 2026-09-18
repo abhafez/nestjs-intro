@@ -1,3 +1,5 @@
 {
-  "INVALID_NUMBER_ID": "Invalid input"
+  "INVALID_NUMBER_ID": "Invalid input",
+  "INVALID_BOOL": "Invalid boolean",
+  "INVALID_UUID": "Invalid UUID"
 }
