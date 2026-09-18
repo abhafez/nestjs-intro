@@ -9,15 +9,19 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { I18nParseIntPipe } from '../app/i18n/i18n-parse-int.pipe';
 
 @Controller('users')
 export class UsersController {
   @Get(':id')
-  getUsers(@Param() params: { id: number }, @Query('offset') query: any) {
+  getUsers(
+    @Param('id', I18nParseIntPipe) id: number,
+    @Query('offset') query: any,
+  ) {
     console.log(query);
-    console.log(params);
+    console.log(id);
 
-    return params;
+    return id;
   }
 
   @Post()
