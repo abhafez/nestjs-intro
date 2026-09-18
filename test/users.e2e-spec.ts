@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from './../src/app/app.module';
+import { AppModule } from '../src/app/app.module';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication<App>;
@@ -21,7 +21,9 @@ describe('UsersController (e2e)', () => {
       .send({ firstName: 'John', lastName: 'Dow', email: 'hamada' })
       .expect(400)
       .expect((res) => {
-        expect(res.body.message).toContainEqual({ property: 'email', message: 'يجب إدخال بريد إلكتروني صالح' });
+        expect(res.body.message).toContainEqual(
+          expect.objectContaining({ property: 'email', constraints: { isEmail: 'يجب إدخال بريد إلكتروني صالح' } }),
+        );
       });
   });
 

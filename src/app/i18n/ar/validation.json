@@ -1,4 +1,5 @@
 {
+  "ID_MUST_BE_NUMERIC": "المعرف يجب أن يكون رقمًا",
   "NAME_MIN_LENGTH": "يجب ألا يقل عن {min} حرف",
   "NAME_MAX_LENGTH": "يجب ألا يزيد عن {max} حرف",
   "EMAIL_INVALID": "يجب إدخال بريد إلكتروني صالح",
