@@ -1,0 +1,6 @@
+{
+  "NAME_MIN_LENGTH": "يجب ألا يقل عن {min} حرف",
+  "NAME_MAX_LENGTH": "يجب ألا يزيد عن {max} حرف",
+  "EMAIL_INVALID": "يجب إدخال بريد إلكتروني صالح",
+  "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب"
+}

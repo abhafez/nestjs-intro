@@ -1,0 +1,6 @@
+{
+  "NAME_MIN_LENGTH": "Must be at least {min} characters",
+  "NAME_MAX_LENGTH": "Must be at most {max} characters",
+  "EMAIL_INVALID": "Must be a valid email address",
+  "EMAIL_REQUIRED": "Email is required"
+}
