@@ -18,7 +18,7 @@ describe('UsersController (e2e)', () => {
     return request(app.getHttpServer())
       .post('/users')
       .set('Accept-Language', 'ar')
-      .send({ firstName: 'Johm', lastName: 'Dow', email: 'hamada' })
+      .send({ firstName: 'John', lastName: 'Dow', email: 'hamada' })
       .expect(400)
       .expect((res) => {
         expect(res.body.message).toContainEqual({ property: 'email', message: 'يجب إدخال بريد إلكتروني صالح' });

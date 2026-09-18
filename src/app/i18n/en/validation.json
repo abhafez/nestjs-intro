@@ -2,5 +2,11 @@
   "NAME_MIN_LENGTH": "Must be at least {min} characters",
   "NAME_MAX_LENGTH": "Must be at most {max} characters",
   "EMAIL_INVALID": "Must be a valid email address",
-  "EMAIL_REQUIRED": "Email is required"
+  "EMAIL_REQUIRED": "Email is required",
+  "PASSWORD_IS_REQUIRED": "Password is required",
+  "PASSWORD_MIN_LENGTH": "Must be at least {min} characters",
+  "PASSWORD_LOWERCASE": "Must contain at least one lowercase letter",
+  "PASSWORD_UPPERCASE": "Must contain at least one uppercase letter",
+  "PASSWORD_NUMBER": "Must contain at least one number",
+  "PASSWORD_SPECIAL": "Must contain at least one special character"
 }

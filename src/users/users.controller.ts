@@ -1,17 +1,4 @@
-import {
-  Body,
-  Controller,
-  DefaultValuePipe,
-  Get,
-  Headers,
-  Ip,
-  Param,
-  ParseBoolPipe,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { i18nException } from '../app/i18n/i18n-exception.factory';
 import { ZodValidationPipe } from '../app/i18n/zod-validation.pipe';
 import { type CreateUserDto, createUserSchema } from './dto/create-user/create-user';
@@ -23,14 +10,6 @@ export class UsersController {
   getUsers(
     @Param('id', new ParseIntPipe({ exceptionFactory: i18nException('errors.INVALID_NUMBER_ID') }))
     id: number,
-    @Query('active', new ParseBoolPipe({ exceptionFactory: i18nException('errors.INVALID_BOOL') }))
-    active: boolean,
-    @Query(
-      'offset',
-      new DefaultValuePipe(10),
-      new ParseIntPipe({ exceptionFactory: i18nException('errors.INVALID_NUMEBR') }),
-    )
-    offset: number,
   ) {
     return id;
   }
@@ -38,12 +17,8 @@ export class UsersController {
 
   //#region POST /users
   @Post()
-  createUser(
-    @Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto,
-    @Headers() header: any,
-    @Ip() ip: any,
-  ) {
-    return 'safe';
+  createUser(@Body(new ZodValidationPipe(createUserSchema)) createUserDto: CreateUserDto) {
+    return createUserDto;
   }
   //#endregion
 
