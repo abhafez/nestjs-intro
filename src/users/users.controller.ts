@@ -13,7 +13,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { i18nException } from '../app/i18n/i18n-exception.factory';
-import { CreateUserDto } from './dto/create-user/create-user';
+import { ZodValidationPipe } from '../app/i18n/zod-validation.pipe';
+import { type CreateUserDto, createUserSchema } from './dto/create-user/create-user';
 
 @Controller('users')
 export class UsersController {
@@ -37,12 +38,11 @@ export class UsersController {
 
   //#region POST /users
   @Post()
-  createUser(@Body() body: CreateUserDto, @Headers() header: any, @Ip() ip: any) {
-    // example: body is validated + i18n error messages applied by the global ValidationPipe
-    console.log(body);
-    console.log(ip);
-    console.log(header);
-
+  createUser(
+    @Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto,
+    @Headers() header: any,
+    @Ip() ip: any,
+  ) {
     return 'safe';
   }
   //#endregion

@@ -1,32 +1,18 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-import { i18nValidationMessage } from 'nestjs-i18n';
+import { z } from 'zod';
 import { USER_NAME_MAX_LENGTH, USER_NAME_MIN_LENGTH } from '../../../app/config/app.constants';
 
-export class CreateUserDto {
-  @IsString()
-  @MinLength(USER_NAME_MIN_LENGTH, {
-    message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }),
-  })
-  @MaxLength(USER_NAME_MAX_LENGTH, {
-    message: i18nValidationMessage('validation.NAME_MAX_LENGTH', { max: USER_NAME_MAX_LENGTH }),
-  })
-  firstName: string;
+export const createUserSchema = z.object({
+  firstName: z
+    .string()
+    .min(USER_NAME_MIN_LENGTH, 'validation.NAME_MIN_LENGTH')
+    .max(USER_NAME_MAX_LENGTH, 'validation.NAME_MAX_LENGTH'),
+  lastName: z
+    .string()
+    .min(USER_NAME_MIN_LENGTH, 'validation.NAME_MIN_LENGTH')
+    .max(USER_NAME_MAX_LENGTH, 'validation.NAME_MAX_LENGTH')
+    .optional(),
+  email: z.string('validation.EMAIL_REQUIRED').email('validation.EMAIL_INVALID'),
+  password: z.string().optional(),
+});
 
-  @IsString()
-  @IsOptional()
-  @MinLength(USER_NAME_MIN_LENGTH, {
-    message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }),
-  })
-  @MaxLength(USER_NAME_MAX_LENGTH, {
-    message: i18nValidationMessage('validation.NAME_MAX_LENGTH', { max: USER_NAME_MAX_LENGTH }),
-  })
-  lastName: string;
-
-  @IsEmail({}, { message: i18nValidationMessage('validation.EMAIL_INVALID') })
-  @IsNotEmpty({ message: i18nValidationMessage('validation.EMAIL_REQUIRED') })
-  email: string;
-
-  @IsOptional()
-  @IsString()
-  password: string;
-}
+export type CreateUserDto = z.infer<typeof createUserSchema>;
