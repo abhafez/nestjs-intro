@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Headers,
   Ip,
@@ -19,21 +20,16 @@ export class UsersController {
   //#region GET /:id
   @Get(':id')
   getUsers(
-    @Param(
-      'id',
-      new ParseIntPipe({
-        exceptionFactory: i18nException('errors.INVALID_NUMBER_ID'),
-      }),
-    )
+    @Param('id', new ParseIntPipe({ exceptionFactory: i18nException('errors.INVALID_NUMBER_ID') }))
     id: number,
-    @Query(
-      'active',
-      new ParseBoolPipe({
-        exceptionFactory: i18nException('errors.INVALID_BOOL'),
-      }),
-    )
+    @Query('active', new ParseBoolPipe({ exceptionFactory: i18nException('errors.INVALID_BOOL') }))
     active: boolean,
-    @Query('offset') offset: any,
+    @Query(
+      'offset',
+      new DefaultValuePipe(10),
+      new ParseIntPipe({ exceptionFactory: i18nException('errors.INVALID_NUMEBR') }),
+    )
+    offset: number,
   ) {
     console.log(offset, active);
 
@@ -45,12 +41,7 @@ export class UsersController {
   // ParseUUIDPipe needs its own route param since :id above is already an int.
   @Get('by-uuid/:uuid')
   getUserByUuid(
-    @Param(
-      'uuid',
-      new ParseUUIDPipe({
-        exceptionFactory: i18nException('errors.INVALID_UUID'),
-      }),
-    )
+    @Param('uuid', new ParseUUIDPipe({ exceptionFactory: i18nException('errors.INVALID_UUID') }))
     uuid: string,
   ) {
     return uuid;

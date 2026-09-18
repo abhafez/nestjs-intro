@@ -10,10 +10,7 @@ import { UsersModule } from '../users/users.module';
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loader: I18nJsonLoader,
-      loaderOptions: {
-        path: join(__dirname, 'i18n'),
-        watch: true,
-      },
+      loaderOptions: { path: join(__dirname, 'i18n'), watch: true },
       resolvers: [AcceptLanguageResolver],
     }),
     UsersModule,
