@@ -21,9 +21,7 @@ describe('UsersController (e2e)', () => {
       .send({ firstName: 'John', lastName: 'Dow', email: 'hamada' })
       .expect(400)
       .expect((res) => {
-        expect(res.body.message).toContainEqual(
-          expect.objectContaining({ property: 'email', constraints: { isEmail: 'يجب إدخال بريد إلكتروني صالح' } }),
-        );
+        expect(res.body.message).toContainEqual({ field: 'email', messages: ['يجب إدخال بريد إلكتروني صالح'] });
       });
   });
 
