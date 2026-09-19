@@ -16,6 +16,7 @@ import { UsersModule } from '../users/users.module';
 import { PostsModule } from '../posts/posts.module';
 import { AuthModule } from '../auth/auth.module';
 import { formatValidationErrors } from './i18n/format-validation-errors';
+import { AppEntities } from './app.entities';
 
 @Module({
   controllers: [AppController],
@@ -40,6 +41,7 @@ import { formatValidationErrors } from './i18n/format-validation-errors';
         database: config.get<string>('DATABASE_NAME'),
         autoLoadEntities: true,
         synchronize: true,
+        entities: AppEntities,
       }),
     }),
     I18nModule.forRoot({

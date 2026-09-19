@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UsersService } from '../users/providers/users.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from './post.entity';
 
 /** Business logic for posts. */
 @Injectable()
@@ -10,14 +13,32 @@ export class PostsService {
    * Creates the service.
    * @param userService used to validate that a post's owner exists
    */
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+  ) {}
 
   /**
    * Creates a post.
    * @param createPostDto post data
    */
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  async create(createPostDto: CreatePostDto) {
+    // if user exists
+    const existingUser = await this.postRepository.findOne({
+      where: { title: createPostDto.title },
+    });
+    // handle exceptions
+    if (existingUser) {
+      return null
+    }
+    // create a new user
+    let newPost = this.postRepository.create(createPostDto);
+    // save to database
+    newPost = await this.postRepository.save(newPost);
+
+    return newUser;
   }
 
   /** Lists all posts. */

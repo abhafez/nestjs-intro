@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: nestjs_user
       POSTGRES_PASSWORD: nestjs_password
-      POSTGRES_DB: nestjs_intro
+      POSTGRES_DB: my_nest_app
     ports:
       - '5432:5432'
     volumes:
