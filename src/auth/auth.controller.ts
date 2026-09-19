@@ -1,8 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/providers/users.service';
 import { LoginDto } from './dto/login.dto';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -10,6 +12,7 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
+  @ApiOperation({ summary: 'Log in with email and password' })
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     const id = loginDto.email as unknown as number;

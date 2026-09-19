@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import { IsEmail, IsOptional, IsString, MaxLength, MinLength, Matches } from 'class-validator';
 import {
@@ -8,6 +9,7 @@ import {
 
 export class CreateUserDto {
   //#region firstName
+  @ApiProperty({ minLength: USER_NAME_MIN_LENGTH, maxLength: USER_NAME_MAX_LENGTH })
   @IsString({ message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }) })
   @MinLength(USER_NAME_MIN_LENGTH, {
     message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }),
@@ -19,6 +21,7 @@ export class CreateUserDto {
   //#endregion
 
   //#region lastName
+  @ApiPropertyOptional({ minLength: USER_NAME_MIN_LENGTH, maxLength: USER_NAME_MAX_LENGTH })
   @IsOptional()
   @IsString({ message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }) })
   @MinLength(USER_NAME_MIN_LENGTH, {
@@ -31,11 +34,16 @@ export class CreateUserDto {
   //#endregion
 
   //#region email
+  @ApiProperty({ example: 'user@example.com' })
   @IsEmail({}, { message: i18nValidationMessage('validation.EMAIL_INVALID') })
   email: string;
   //#endregion
 
   //#region password
+  @ApiProperty({
+    minLength: USER_PASSWORD_MIN_LENGTH,
+    description: 'Must contain lowercase, uppercase, a number, and a special character',
+  })
   @IsString({ message: i18nValidationMessage('validation.PASSWORD_IS_REQUIRED') })
   @MinLength(USER_PASSWORD_MIN_LENGTH, {
     message: i18nValidationMessage('validation.PASSWORD_MIN_LENGTH', { min: USER_PASSWORD_MIN_LENGTH }),
