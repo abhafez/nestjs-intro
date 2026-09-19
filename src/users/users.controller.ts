@@ -1,5 +1,5 @@
 import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user/create-user.dto';
 import { GetUserParamsDto } from './dto/create-user/get-user-params.dto';
 import { PatchUserDto } from './dto/create-user/patch-user.dto';
@@ -15,6 +15,7 @@ export class UsersController {
   @ApiParam({ name: 'id', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Page size', example: 10 })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number', example: 1 })
+  @ApiResponse({ status: 200, description: 'Users returned' })
   @Get(':id')
   getUsers(
     @Param() getUserParamsDto: GetUserParamsDto,
@@ -27,6 +28,8 @@ export class UsersController {
 
   //#region POST /users
   @ApiOperation({ summary: 'Create a user' })
+  @ApiResponse({ status: 201, description: 'User created' })
+  @ApiResponse({ status: 400, description: 'Validation failed' })
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return createUserDto;
@@ -35,6 +38,8 @@ export class UsersController {
 
   //#region PATCH /user/:id
   @ApiOperation({ summary: 'Update a user' })
+  @ApiResponse({ status: 200, description: 'User updated' })
+  @ApiResponse({ status: 400, description: 'Validation failed' })
   @Patch(':id')
   public patchUser(@Body() patchUserDto: PatchUserDto) {
     return patchUserDto;

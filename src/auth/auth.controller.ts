@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/providers/users.service';
 import { LoginDto } from './dto/login.dto';
@@ -13,6 +13,8 @@ export class AuthController {
   ) {}
 
   @ApiOperation({ summary: 'Log in with email and password' })
+  @ApiResponse({ status: 200, description: 'Login succeeded' })
+  @ApiResponse({ status: 400, description: 'Validation failed' })
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     const id = loginDto.email as unknown as number;
