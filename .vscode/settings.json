@@ -2,5 +2,13 @@
   "editor.defaultFormatter": "oxc.oxfmt",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": { "source.fixAll.oxc": "explicit" },
-  "[typescript]": { "editor.defaultFormatter": "oxc.oxfmt" }
+  "[typescript]": { "editor.defaultFormatter": "oxc.oxfmt" },
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.module\\.ts$",
+        "cmd": "node ${workspaceFolder}/scripts/reorder-module-props.mjs ${file}"
+      }
+    ]
+  }
 }
