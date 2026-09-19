@@ -10,6 +10,7 @@ import { UpdateTagDto } from './dto/update-tag.dto';
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
+  //#region POST /tags
   /**
    * Creates a tag.
    * @param createTagDto tag data
@@ -21,7 +22,9 @@ export class TagsController {
   create(@Body() createTagDto: CreateTagDto) {
     return this.tagsService.create(createTagDto);
   }
+  //#endregion
 
+  //#region GET /tags
   /** Lists all tags. */
   @ApiOperation({ summary: 'List all tags' })
   @ApiResponse({ status: 200, description: 'Tags returned' })
@@ -29,7 +32,9 @@ export class TagsController {
   findAll() {
     return this.tagsService.findAll();
   }
+  //#endregion
 
+  //#region GET /tags/:id
   /**
    * Gets a tag by id.
    * @param id tag id
@@ -42,7 +47,9 @@ export class TagsController {
   findOne(@Param('id') id: string) {
     return this.tagsService.findOne(+id);
   }
+  //#endregion
 
+  //#region PATCH /tags/:id
   /**
    * Updates a tag.
    * @param id tag id
@@ -57,7 +64,9 @@ export class TagsController {
   update(@Param('id') id: string, @Body() updateTagDto: UpdateTagDto) {
     return this.tagsService.update(+id, updateTagDto);
   }
+  //#endregion
 
+  //#region DELETE /tags/:id
   /**
    * Deletes a tag.
    * @param id tag id
@@ -70,4 +79,5 @@ export class TagsController {
   remove(@Param('id') id: string) {
     return this.tagsService.remove(+id);
   }
+  //#endregion
 }

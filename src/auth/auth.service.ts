@@ -13,6 +13,7 @@ export class AuthService {
     private readonly userService: UsersService,
   ) {}
 
+  //#region login
   /**
    * Looks up the user being logged in.
    * @param id user id
@@ -20,7 +21,9 @@ export class AuthService {
   login(id: number) {
     return this.userService.findOneById(id);
   }
+  //#endregion
 
+  //#region isAuth
   /**
    * Checks whether a user is authenticated.
    * @param id user id
@@ -28,4 +31,5 @@ export class AuthService {
   isAuth(id: number) {
     return true;
   }
+  //#endregion
 }

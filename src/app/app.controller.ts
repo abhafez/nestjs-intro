@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  //#region GET /
   /** Returns a static greeting used as a health check. */
   @ApiOperation({ summary: 'Health-check greeting' })
   @ApiResponse({ status: 200, description: 'Greeting returned' })
@@ -15,4 +16,5 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+  //#endregion
 }

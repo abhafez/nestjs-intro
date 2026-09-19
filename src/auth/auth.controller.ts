@@ -13,6 +13,7 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
+  //#region POST /auth/login
   /**
    * Logs a user in by email and password.
    * @param loginDto credentials submitted by the client
@@ -25,4 +26,5 @@ export class AuthController {
     const id = loginDto.email as unknown as number;
     return this.authService.login(id);
   }
+  //#endregion
 }

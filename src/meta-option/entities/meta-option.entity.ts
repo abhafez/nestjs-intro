@@ -1,26 +1,24 @@
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
+/** An arbitrary JSON metadata entry. */
 @Entity()
 export class MetaOption {
-    @PrimaryGeneratedColumn()
-    id: number;
+  /** Primary key. */
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({
-        type: 'json',
-        nullable: false,
-    })
-    metaValue: string;
+  /** JSON-encoded value. */
+  @Column({
+    type: 'json',
+    nullable: false,
+  })
+  metaValue: string;
 
-    @CreateDateColumn()
-    createDate: Date;
+  /** Timestamp the meta option was created. */
+  @CreateDateColumn()
+  createDate: Date;
 
-    @UpdateDateColumn()
-    updateDate: Date;
+  /** Timestamp the meta option was last updated. */
+  @UpdateDateColumn()
+  updateDate: Date;
 }

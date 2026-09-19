@@ -14,7 +14,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreatePostMetaOptionsDto } from './create-post-meta-options.dto';
-import { postStatus } from '../enums/post-status.enum';
+import { PostStatus } from '../enums/post-status.enum';
 import { PostType } from '../enums/post-type.enum';
 
 /** Payload for creating a post. */
@@ -30,7 +30,7 @@ export class CreatePostDto {
   @ApiProperty({ enum: PostType })
   @IsEnum(PostType)
   @IsNotEmpty()
-  postType: string;
+  postType: PostType;
 
   /** URL-friendly identifier, e.g. `my-url`. */
   @ApiProperty({ example: 'my-url', description: 'Lowercase letters and "-" only, no spaces' })
@@ -42,10 +42,10 @@ export class CreatePostDto {
   slug: string;
 
   /** Publication status. */
-  @ApiProperty({ enum: postStatus })
-  @IsEnum(postStatus)
+  @ApiProperty({ enum: PostStatus })
+  @IsEnum(PostStatus)
   @IsNotEmpty()
-  status: postStatus;
+  status: PostStatus;
 
   /** Body content. */
   @ApiPropertyOptional()

@@ -10,6 +10,7 @@ import { PatchPostDto } from './dto/patch-post.dto';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
+  //#region POST /posts
   /**
    * Creates a post.
    * @param createPostDto post data
@@ -21,7 +22,9 @@ export class PostsController {
   create(@Body() createPostDto: CreatePostDto) {
     return this.postsService.create(createPostDto);
   }
+  //#endregion
 
+  //#region GET /posts
   /** Lists all posts. */
   @ApiOperation({ summary: 'List all posts' })
   @ApiResponse({ status: 200, description: 'Posts returned' })
@@ -29,7 +32,9 @@ export class PostsController {
   findAll() {
     return this.postsService.findAll();
   }
+  //#endregion
 
+  //#region GET /posts/user/:id
   /**
    * Lists the posts belonging to a user.
    * @param id user id
@@ -41,7 +46,9 @@ export class PostsController {
   getAllForUser(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.findAllForUser(id);
   }
+  //#endregion
 
+  //#region GET /posts/:id
   /**
    * Gets a post by id.
    * @param id post id
@@ -54,7 +61,9 @@ export class PostsController {
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(+id);
   }
+  //#endregion
 
+  //#region PATCH /posts/:id
   /**
    * Updates a post.
    * @param id post id
@@ -69,7 +78,9 @@ export class PostsController {
   update(@Param('id') id: string, @Body() updatePostDto: PatchPostDto) {
     return this.postsService.update(+id, updatePostDto);
   }
+  //#endregion
 
+  //#region DELETE /posts/:id
   /**
    * Deletes a post.
    * @param id post id
@@ -82,4 +93,5 @@ export class PostsController {
   remove(@Param('id') id: string) {
     return this.postsService.remove(+id);
   }
+  //#endregion
 }

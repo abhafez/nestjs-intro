@@ -22,6 +22,7 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  //#region createUser
   /**
    * Creates a new user, or returns `null` if a user with the same email already exists.
    * @param createUserDto data for the new user
@@ -33,7 +34,7 @@ export class UsersService {
     });
     // handle exceptions
     if (existingUser) {
-      return null
+      return null;
     }
     // create a new user
     let newUser = this.userRepository.create(createUserDto);
@@ -42,6 +43,7 @@ export class UsersService {
 
     return newUser;
   }
+  //#endregion
 
   //#region finaAll
   /**
