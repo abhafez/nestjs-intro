@@ -1,14 +1,21 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user/create-user.dto';
 import { GetUserParamsDto } from './dto/create-user/get-user-params.dto';
 import { PatchUserDto } from './dto/create-user/patch-user.dto';
+import { UsersService } from './providers/users.service';
 
 @Controller('users')
 export class UsersController {
-  //#region GET users/:id
+  constructor(private readonly userService: UsersService) {}
+
+  //#region GET /users/:id
   @Get(':id')
-  getUsers(@Param() getUserParamsDto: GetUserParamsDto) {
-    return getUserParamsDto;
+  getUsers(
+    @Param() getUserParamsDto: GetUserParamsDto,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ) {
+    return this.userService.findAll(getUserParamsDto, limit, page);
   }
   //#endregion
 
