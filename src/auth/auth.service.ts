@@ -1,8 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { UsersService } from '../users/providers/users.service';
 
 @Injectable()
 export class AuthService {
-  login() {
-    return 'This action adds a new auth';
+  constructor(private readonly userService: UsersService) {}
+
+  login(id: number) {
+    return this.userService.findOneById(id);
+  }
+
+  isAuth(id: number) {
+    return true;
   }
 }

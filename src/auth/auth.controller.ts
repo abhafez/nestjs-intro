@@ -13,6 +13,6 @@ export class AuthController {
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     const id = loginDto.email as unknown as number;
-    return this.usersService.findOneById(id);
+    return this.authService.login(id);
   }
 }
