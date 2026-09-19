@@ -4,11 +4,16 @@ import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 
+/** Tag CRUD routes. */
 @ApiTags('Tags')
 @Controller('tags')
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
+  /**
+   * Creates a tag.
+   * @param createTagDto tag data
+   */
   @ApiOperation({ summary: 'Create a tag' })
   @ApiResponse({ status: 201, description: 'Tag created' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
@@ -17,6 +22,7 @@ export class TagsController {
     return this.tagsService.create(createTagDto);
   }
 
+  /** Lists all tags. */
   @ApiOperation({ summary: 'List all tags' })
   @ApiResponse({ status: 200, description: 'Tags returned' })
   @Get()
@@ -24,6 +30,10 @@ export class TagsController {
     return this.tagsService.findAll();
   }
 
+  /**
+   * Gets a tag by id.
+   * @param id tag id
+   */
   @ApiOperation({ summary: 'Get a tag by id' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Tag returned' })
@@ -33,6 +43,11 @@ export class TagsController {
     return this.tagsService.findOne(+id);
   }
 
+  /**
+   * Updates a tag.
+   * @param id tag id
+   * @param updateTagDto fields to update
+   */
   @ApiOperation({ summary: 'Update a tag' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Tag updated' })
@@ -43,6 +58,10 @@ export class TagsController {
     return this.tagsService.update(+id, updateTagDto);
   }
 
+  /**
+   * Deletes a tag.
+   * @param id tag id
+   */
   @ApiOperation({ summary: 'Delete a tag' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Tag deleted' })

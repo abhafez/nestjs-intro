@@ -4,11 +4,16 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PatchPostDto } from './dto/patch-post.dto';
 
+/** Post CRUD routes. */
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
+  /**
+   * Creates a post.
+   * @param createPostDto post data
+   */
   @ApiOperation({ summary: 'Create a post' })
   @ApiResponse({ status: 201, description: 'Post created' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
@@ -17,6 +22,7 @@ export class PostsController {
     return this.postsService.create(createPostDto);
   }
 
+  /** Lists all posts. */
   @ApiOperation({ summary: 'List all posts' })
   @ApiResponse({ status: 200, description: 'Posts returned' })
   @Get()
@@ -24,6 +30,10 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
+  /**
+   * Lists the posts belonging to a user.
+   * @param id user id
+   */
   @ApiOperation({ summary: "List a user's posts" })
   @ApiParam({ name: 'id', type: Number, description: 'User id' })
   @ApiResponse({ status: 200, description: "User's posts returned" })
@@ -32,6 +42,10 @@ export class PostsController {
     return this.postsService.findAllForUser(id);
   }
 
+  /**
+   * Gets a post by id.
+   * @param id post id
+   */
   @ApiOperation({ summary: 'Get a post by id' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Post returned' })
@@ -41,6 +55,11 @@ export class PostsController {
     return this.postsService.findOne(+id);
   }
 
+  /**
+   * Updates a post.
+   * @param id post id
+   * @param updatePostDto fields to update
+   */
   @ApiOperation({ summary: 'Update a post' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Post updated' })
@@ -51,6 +70,10 @@ export class PostsController {
     return this.postsService.update(+id, updatePostDto);
   }
 
+  /**
+   * Deletes a post.
+   * @param id post id
+   */
   @ApiOperation({ summary: 'Delete a post' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Post deleted' })

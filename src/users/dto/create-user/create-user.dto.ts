@@ -7,8 +7,10 @@ import {
   USER_PASSWORD_MIN_LENGTH,
 } from '../../../app/config/app.constants';
 
+/** Payload for creating a user. */
 export class CreateUserDto {
   //#region firstName
+  /** User's first name. */
   @ApiProperty({ minLength: USER_NAME_MIN_LENGTH, maxLength: USER_NAME_MAX_LENGTH })
   @IsString({ message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }) })
   @MinLength(USER_NAME_MIN_LENGTH, {
@@ -21,6 +23,7 @@ export class CreateUserDto {
   //#endregion
 
   //#region lastName
+  /** User's last name. */
   @ApiPropertyOptional({ minLength: USER_NAME_MIN_LENGTH, maxLength: USER_NAME_MAX_LENGTH })
   @IsOptional()
   @IsString({ message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }) })
@@ -34,12 +37,14 @@ export class CreateUserDto {
   //#endregion
 
   //#region email
+  /** User's email address. */
   @ApiProperty({ example: 'user@example.com' })
   @IsEmail({}, { message: i18nValidationMessage('validation.EMAIL_INVALID') })
   email: string;
   //#endregion
 
   //#region password
+  /** User's password; must contain lowercase, uppercase, a number, and a special character. */
   @ApiProperty({
     minLength: USER_PASSWORD_MIN_LENGTH,
     description: 'Must contain lowercase, uppercase, a number, and a special character',

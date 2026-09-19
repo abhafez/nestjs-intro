@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/providers/users.service';
 import { LoginDto } from './dto/login.dto';
 
+/** Handles authentication routes. */
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -12,6 +13,10 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
+  /**
+   * Logs a user in by email and password.
+   * @param loginDto credentials submitted by the client
+   */
   @ApiOperation({ summary: 'Log in with email and password' })
   @ApiResponse({ status: 200, description: 'Login succeeded' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
