@@ -12,6 +12,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from '../users/users.module';
 import { formatValidationErrors } from './i18n/format-validation-errors';
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { formatValidationErrors } from './i18n/format-validation-errors';
       resolvers: [AcceptLanguageResolver],
     }),
     UsersModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [
