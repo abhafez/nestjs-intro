@@ -13,6 +13,7 @@ import { AppService } from './app.service';
 import { UsersModule } from '../users/users.module';
 import { formatValidationErrors } from './i18n/format-validation-errors';
 import { PostsModule } from '../posts/posts.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { PostsModule } from '../posts/posts.module';
       loaderOptions: { path: join(__dirname, 'i18n'), watch: true },
       resolvers: [AcceptLanguageResolver],
     }),
-    UsersModule,
+    AuthModule,
     PostsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
