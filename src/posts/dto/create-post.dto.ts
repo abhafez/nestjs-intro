@@ -78,8 +78,8 @@ export class CreatePostDto {
     minLength: 3,
     example: [1, 2, 3],
   })
-  @IsArray()
   @IsOptional()
+  @IsArray()
   @IsInt({ each: true })
   tags: number[];
 

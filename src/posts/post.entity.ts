@@ -14,7 +14,7 @@ import { MetaOption } from '../meta-option/entities/meta-option.entity';
 import { User } from '../users/user.entity';
 import { Tag } from '../tags/entities/tag.entity';
 
-/** A blog post, page, or other content item. */
+/** A blog post, page, or another content item. */
 @Entity()
 export class Post {
   /** Primary key. */
@@ -92,7 +92,7 @@ export class Post {
 
   // Work on these in lecture on relationships
   /** Tags associated with the post. */
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, { eager: true })
   @JoinTable()
   tags?: Tag[];
 
