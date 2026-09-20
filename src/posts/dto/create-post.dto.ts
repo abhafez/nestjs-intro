@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
-  IsEnum,
+  IsEnum, IsInt,
   IsISO8601,
   IsJSON,
   IsNotEmpty,
@@ -10,7 +10,6 @@ import {
   IsUrl,
   Matches,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreatePostMetaOptionsDto } from './create-post-meta-options.dto';
@@ -84,4 +83,13 @@ export class CreatePostDto {
   @IsOptional()
   @Type(() => CreatePostMetaOptionsDto)
   metaOptions: CreatePostMetaOptionsDto;
+
+  @ApiProperty({
+    type: 'integer',
+    required: true,
+    example: 1223
+  })
+  @IsInt()
+  @IsNotEmpty()
+  authorId: number;
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Post } from '../posts/post.entity';
 
 /** A registered user account. */
 @Entity()
@@ -22,4 +23,7 @@ export class User {
   /** Hashed password. */
   @Column()
   password: string;
+
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[];
 }

@@ -1,7 +1,8 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { PostType } from './enums/post-type.enum';
 import { PostStatus } from './enums/post-status.enum';
 import { MetaOption } from '../meta-option/entities/meta-option.entity';
+import { User } from '../users/user.entity';
 
 /** A blog post, page, or other content item. */
 @Entity()
@@ -73,6 +74,9 @@ export class Post {
     nullable: true,
   })
   publishOn?: Date;
+
+  @ManyToOne(() => User, (user) => user.posts)
+  author: User;
 
   // Work on these in lecture on relationships
   /** Tags associated with the post. */

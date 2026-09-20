@@ -32,9 +32,13 @@ export class PostsService {
    */
   //#region create
   async create(createPostDto: CreatePostDto) {
-    let post = this.postRepository.create(createPostDto);
+    let author = await this.userService.findOneById(createPostDto.authorId);
 
-    return await this.postRepository.save(post);
+    if (author) {
+      let post = this.postRepository.create({ ...createPostDto, author });
+
+      return await this.postRepository.save(post);
+    }
   }
   //#endregion
 
@@ -50,8 +54,8 @@ export class PostsService {
    * Lists the posts belonging to a user.
    * @param id user id
    */
-  findAllForUser(id: number) {
-    if (this.userService.findOneById(id)) {
+  async findAllForUser(id: number) {
+    if (await this.userService.findOneById(id)) {
       return [{ title: 'hello' }, { title: 'world' }];
     }
     return `This action returns a #${id} post`;
