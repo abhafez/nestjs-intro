@@ -1,24 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { Tag } from './entities/tag.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 /** Business logic for tags. */
 @Injectable()
 export class TagsService {
+  /**
+   * Creates the service.
+   * @param tagsRepository
+   */
+  constructor(
+    @InjectRepository(Tag)
+    private readonly tagsRepository: Repository<Tag>,
+  ) {}
   //#region create
   /**
    * Creates a tag.
    * @param createTagDto tag data
    */
-  create(createTagDto: CreateTagDto) {
-    return 'This action adds a new tag';
+  async create(createTagDto: CreateTagDto) {
+    return this.tagsRepository.create(createTagDto);
   }
   //#endregion
 
   //#region findAll
   /** Lists all tags. */
-  findAll() {
-    return `This action returns all tags`;
+  async findAll() {
+    return await this.tagsRepository.find();
   }
   //#endregion
 
@@ -27,8 +38,8 @@ export class TagsService {
    * Finds a single tag by id.
    * @param id tag id
    */
-  findOne(id: number) {
-    return `This action returns a #${id} tag`;
+  async findOne(id: number) {
+    return await this.tagsRepository.findOneBy({ id });
   }
   //#endregion
 
@@ -38,8 +49,14 @@ export class TagsService {
    * @param id tag id
    * @param updateTagDto fields to update
    */
-  update(id: number, updateTagDto: UpdateTagDto) {
-    return `This action updates a #${id} tag`;
+  async update(id: number, updateTagDto: UpdateTagDto) {
+    const tag = await this.tagsRepository.findOneBy({ id });
+
+    if (tag) {
+      Object.assign(tag, updateTagDto);
+
+      return await this.tagsRepository.save(tag);
+    }
   }
   //#endregion
 
@@ -48,8 +65,13 @@ export class TagsService {
    * Removes a tag.
    * @param id tag id
    */
-  remove(id: number) {
-    return `This action removes a #${id} tag`;
+  async remove(id: number) {
+    await this.tagsRepository.delete(id);
+
+    return {
+      deleted: true,
+      id,
+    };
   }
   //#endregion
 }

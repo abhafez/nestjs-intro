@@ -55,10 +55,7 @@ export class PostsService {
    * @param id user id
    */
   async findAllForUser(id: number) {
-    if (await this.userService.findOneById(id)) {
-      return [{ title: 'hello' }, { title: 'world' }];
-    }
-    return `This action returns a #${id} post`;
+    return await this.postRepository.find({ where: { author: { id } } });
   }
   //#endregion
 
@@ -67,8 +64,8 @@ export class PostsService {
    * Finds a single post by id.
    * @param id post id
    */
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    return await this.postRepository.findOneBy({ id });
   }
   //#endregion
 
@@ -78,8 +75,12 @@ export class PostsService {
    * @param id post id
    * @param updatePostDto fields to update
    */
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, updatePostDto: UpdatePostDto) {
+    const post = await this.postRepository.findOneBy({ id });
+
+    Object.assign(post, updatePostDto);
+
+    return await this.postRepository.save(post);
   }
   //#endregion
 

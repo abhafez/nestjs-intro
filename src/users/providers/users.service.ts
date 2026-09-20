@@ -53,18 +53,15 @@ export class UsersService {
    * @param limit page size
    * @param page page number
    */
-  public findAll(getUserParamDto: GetUserParamsDto, limit: number, page: number) {
-    console.log(getUserParamDto, limit, page);
-    return [
-      {
-        firstName: 'john',
-        email: 'john@doe.com',
-      },
-      {
-        firstName: 'Alice',
-        email: 'Alice@wonderland.com',
-      },
-    ];
+  public async findAll(getUserParamDto: GetUserParamsDto, limit: number, page: number) {
+    if (getUserParamDto.id) {
+      return await this.userRepository.findOneBy({ id: getUserParamDto.id });
+    }
+
+    return await this.userRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
   }
   //#endregion
 

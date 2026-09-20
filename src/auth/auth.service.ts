@@ -22,14 +22,4 @@ export class AuthService {
     return this.userService.findOneById(id);
   }
   //#endregion
-
-  //#region isAuth
-  /**
-   * Checks whether a user is authenticated.
-   * @param id user id
-   */
-  isAuth(id: number) {
-    return true;
-  }
-  //#endregion
 }

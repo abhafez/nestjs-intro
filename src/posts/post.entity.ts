@@ -76,7 +76,7 @@ export class Post {
   publishOn?: Date;
 
   @ManyToOne(() => User, (user) => user.posts, {
-    eager: true
+    eager: true,
   })
   author: User;
 

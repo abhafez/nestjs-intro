@@ -8,6 +8,10 @@ import { Repository } from 'typeorm';
 /** Business logic for meta options. */
 @Injectable()
 export class MetaOptionService {
+  /**
+   * Creates the service.
+   * @param metaOptionsRepository
+   */
   constructor(
     @InjectRepository(MetaOption)
     private readonly metaOptionsRepository: Repository<MetaOption>,
@@ -28,8 +32,8 @@ export class MetaOptionService {
 
   //#region findAll
   /** Lists all meta options. */
-  findAll() {
-    return `This action returns all metaOption`;
+  async findAll() {
+    return await this.metaOptionsRepository.find();
   }
   //#endregion
 
@@ -38,8 +42,8 @@ export class MetaOptionService {
    * Finds a single meta option by id.
    * @param id meta option id
    */
-  findOne(id: number) {
-    return `This action returns a #${id} metaOption`;
+  async findOne(id: number) {
+    return await this.metaOptionsRepository.findOneBy({ id });
   }
   //#endregion
 
@@ -49,8 +53,12 @@ export class MetaOptionService {
    * @param id meta option id
    * @param updateMetaOptionDto fields to update
    */
-  update(id: number, updateMetaOptionDto: UpdateMetaOptionDto) {
-    return `This action updates a #${id} metaOption`;
+  async update(id: number, updateMetaOptionDto: UpdateMetaOptionDto) {
+    const metaOption = await this.metaOptionsRepository.findOneBy({ id });
+
+    Object.assign(metaOption, updateMetaOptionDto);
+
+    return await this.metaOptionsRepository.save(metaOption);
   }
   //#endregion
 
@@ -59,8 +67,13 @@ export class MetaOptionService {
    * Removes a meta option.
    * @param id meta option id
    */
-  remove(id: number) {
-    return `This action removes a #${id} metaOption`;
+  async remove(id: number) {
+    await this.metaOptionsRepository.delete(id);
+
+    return {
+      deleted: true,
+      id,
+    };
   }
   //#endregion
 }

@@ -5,7 +5,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedCol
 export class Tag {
   /** Primary key. */
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   /** Display name. */
   @Column({
