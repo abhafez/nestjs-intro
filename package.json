@@ -10,7 +10,7 @@
     "format": "oxfmt .",
     "format:check": "oxfmt . --check",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "oxlint .",
@@ -19,7 +19,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand --forceExit",
     "prepare": "husky",
     "doc": "npx @compodoc/compodoc -p tsconfig.build.json -s --port 3001 --watch -d documentation"
   },
@@ -33,6 +33,7 @@
     "@nestjs/typeorm": "^11.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
+    "joi": "^18.2.9",
     "nestjs-i18n": "^10.8.5",
     "pg": "^8.23.0",
     "reflect-metadata": "^0.2.2",
@@ -70,6 +71,9 @@
       "js",
       "json",
       "ts"
+    ],
+    "modulePaths": [
+      "<rootDir>"
     ],
     "rootDir": "src",
     "testEnvironment": "node",
