@@ -80,4 +80,19 @@ export class TagsController {
     return this.tagsService.remove(+id);
   }
   //#endregion
+
+  //#region DELETE /tags/:id/soft
+  /**
+   * Soft Deletes a tag.
+   * @param id tag id
+   */
+  @ApiOperation({ summary: 'Delete a tag' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Tag deleted' })
+  @ApiResponse({ status: 404, description: 'Tag not found' })
+  @Delete(':id/soft')
+  softRemove(@Param('id') id: string) {
+    return this.tagsService.softRemove(+id);
+  }
+  //#endregion
 }

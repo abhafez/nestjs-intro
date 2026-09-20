@@ -86,4 +86,19 @@ export class TagsService {
     };
   }
   //#endregion
+
+  //#region remove
+  /**
+   * Soft removes a tag.
+   * @param id tag id
+   */
+  async softRemove(id: number) {
+    await this.tagsRepository.softDelete(id);
+
+    return {
+      deleted: true,
+      id,
+    };
+  }
+  //#endregion
 }

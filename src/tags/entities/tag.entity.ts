@@ -72,6 +72,6 @@ export class Tag {
   deletedAt: Date;
 
   /** Many-to-many relationship with posts */
-  @ManyToMany(() => Post, (post) => post.tags)
+  @ManyToMany(() => Post, (post) => post.tags, { onDelete: 'CASCADE' })
   posts: Post[];
 }
