@@ -1,8 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { PostType } from './enums/post-type.enum';
 import { PostStatus } from './enums/post-status.enum';
 import { MetaOption } from '../meta-option/entities/meta-option.entity';
 import { User } from '../users/user.entity';
+import { Tag } from '../tags/entities/tag.entity';
 
 /** A blog post, page, or other content item. */
 @Entity()
@@ -82,7 +92,9 @@ export class Post {
 
   // Work on these in lecture on relationships
   /** Tags associated with the post. */
-  tags?: string[];
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags?: Tag[];
 
   /** Arbitrary metadata entries attached to the post. */
   @OneToOne(() => MetaOption, (metaOption) => metaOption.post, { cascade: true, eager: true })

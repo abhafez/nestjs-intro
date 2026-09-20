@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { Tag } from './entities/tag.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 /** Business logic for tags. */
@@ -42,6 +42,16 @@ export class TagsService {
    */
   async findOne(id: number) {
     return await this.tagsRepository.findOneBy({ id });
+  }
+  //#endregion
+
+  //#region findMultipleTags
+  /**
+   * Finds multiple tags by their ids.
+   * @param ids tag ids
+   */
+  async findMultipleTags(ids: number[]) {
+    return await this.tagsRepository.findBy({ id: In(ids) });
   }
   //#endregion
 
