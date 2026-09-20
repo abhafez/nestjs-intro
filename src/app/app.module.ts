@@ -17,6 +17,8 @@ import { PostsModule } from '../posts/posts.module';
 import { AuthModule } from '../auth/auth.module';
 import { formatValidationErrors } from './i18n/format-validation-errors';
 import { AppEntities } from './app.entities';
+import { MetaOptionModule } from '../meta-option/meta-option.module';
+import { TagsModule } from '../tags/tags.module';
 
 @Module({
   controllers: [AppController],
@@ -53,6 +55,8 @@ import { AppEntities } from './app.entities';
     AuthModule,
     PostsModule,
     UsersModule,
+    MetaOptionModule,
+    TagsModule,
   ],
 })
 export class AppModule {}

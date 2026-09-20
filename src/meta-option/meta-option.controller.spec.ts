@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { MetaOptionController } from './meta-option.controller';
 import { MetaOptionService } from './meta-option.service';
+import { MetaOption } from './entities/meta-option.entity';
 
 describe('MetaOptionController', () => {
   let controller: MetaOptionController;
@@ -8,7 +10,7 @@ describe('MetaOptionController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MetaOptionController],
-      providers: [MetaOptionService],
+      providers: [MetaOptionService, { provide: getRepositoryToken(MetaOption), useValue: {} }],
     }).compile();
 
     controller = module.get<MetaOptionController>(MetaOptionController);

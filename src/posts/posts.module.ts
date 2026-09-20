@@ -4,10 +4,11 @@ import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { UsersModule } from '../users/users.module';
 import { Post } from './post.entity';
+import { MetaOption } from '../meta-option/entities/meta-option.entity';
 
 @Module({
   controllers: [PostsController],
   providers: [PostsService],
-  imports: [UsersModule, TypeOrmModule.forFeature([Post])],
+  imports: [UsersModule, TypeOrmModule.forFeature([Post, MetaOption])],
 })
 export class PostsModule {}

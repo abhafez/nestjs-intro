@@ -80,10 +80,8 @@ export class CreatePostDto {
   tags: string[];
 
   /** Arbitrary key/value metadata for the post. */
-  @ApiPropertyOptional({ type: [CreatePostMetaOptionsDto] })
+  @ApiPropertyOptional({ type: [CreatePostMetaOptionsDto], required: false })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDto)
-  metaOptions: CreatePostMetaOptionsDto[];
+  metaOptions: CreatePostMetaOptionsDto;
 }

@@ -5,6 +5,7 @@ import { UsersService } from '../users/providers/users.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './post.entity';
+import { MetaOption } from '../meta-option/entities/meta-option.entity';
 
 /** Business logic for posts. */
 @Injectable()
@@ -12,12 +13,17 @@ export class PostsService {
   /**
    * Creates the service.
    * @param userService used to validate that a post's owner exists
+   * @param postRepository
+   * @param metaOptionRepository
    */
   constructor(
     private readonly userService: UsersService,
 
     @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
+    public readonly postRepository: Repository<Post>,
+
+    @InjectRepository(MetaOption)
+    public readonly metaOptionRepository: Repository<MetaOption>,
   ) {}
 
   /**
@@ -26,27 +32,16 @@ export class PostsService {
    */
   //#region create
   async create(createPostDto: CreatePostDto) {
-    // if user exists
-    const existingUser = await this.postRepository.findOne({
-      where: { title: createPostDto.title },
-    });
-    // handle exceptions
-    if (existingUser) {
-      return null;
-    }
-    // create a new user
-    let newPost = this.postRepository.create(createPostDto);
-    // save to database
-    newPost = await this.postRepository.save(newPost);
+    let post = this.postRepository.create(createPostDto);
 
-    return newPost;
+    return await this.postRepository.save(post);
   }
   //#endregion
 
   //#region findAll
   /** Lists all posts. */
-  findAll() {
-    return `This action returns all posts`;
+  async findAll() {
+    return await this.postRepository.find();
   }
   //#endregion
 
@@ -89,8 +84,13 @@ export class PostsService {
    * Removes a post.
    * @param id post id
    */
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    await this.postRepository.delete(id);
+
+    return {
+      deleted: true,
+      id,
+    };
   }
   //#endregion
 }

@@ -4,6 +4,7 @@ import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { UsersService } from '../users/providers/users.service';
 import { Post } from './post.entity';
+import { MetaOption } from '../meta-option/entities/meta-option.entity';
 
 describe('PostsController', () => {
   let controller: PostsController;
@@ -15,6 +16,7 @@ describe('PostsController', () => {
         PostsService,
         { provide: UsersService, useValue: { findOneById: jest.fn() } },
         { provide: getRepositoryToken(Post), useValue: {} },
+        { provide: getRepositoryToken(MetaOption), useValue: {} },
       ],
     }).compile();
 

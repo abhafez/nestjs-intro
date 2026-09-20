@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { PostType } from './enums/post-type.enum';
 import { PostStatus } from './enums/post-status.enum';
-import { CreatePostMetaOptionsDto } from './dto/meta-option.dto';
+import { MetaOption } from '../meta-option/entities/meta-option.entity';
 
 /** A blog post, page, or other content item. */
 @Entity()
@@ -77,6 +77,9 @@ export class Post {
   // Work on these in lecture on relationships
   /** Tags associated with the post. */
   tags?: string[];
+
   /** Arbitrary metadata entries attached to the post. */
-  metaOptions?: CreatePostMetaOptionsDto[];
+  @OneToOne(() => MetaOption, (metaOption) => metaOption.post, { cascade: true, eager: true })
+  @JoinColumn()
+  metaOptions?: MetaOption;
 }
