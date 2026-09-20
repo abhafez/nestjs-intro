@@ -22,7 +22,9 @@ export class TagsService {
    * @param createTagDto tag data
    */
   async create(createTagDto: CreateTagDto) {
-    return this.tagsRepository.create(createTagDto);
+    const tag = this.tagsRepository.create(createTagDto);
+
+    return await this.tagsRepository.save(tag);
   }
   //#endregion
 

@@ -78,9 +78,11 @@ export class PostsService {
   async update(id: number, updatePostDto: UpdatePostDto) {
     const post = await this.postRepository.findOneBy({ id });
 
-    Object.assign(post, updatePostDto);
+    if (post) {
+      Object.assign(post, updatePostDto);
 
-    return await this.postRepository.save(post);
+      return await this.postRepository.save(post);
+    }
   }
   //#endregion
 

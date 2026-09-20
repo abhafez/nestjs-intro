@@ -56,9 +56,11 @@ export class MetaOptionService {
   async update(id: number, updateMetaOptionDto: UpdateMetaOptionDto) {
     const metaOption = await this.metaOptionsRepository.findOneBy({ id });
 
-    Object.assign(metaOption, updateMetaOptionDto);
+    if (metaOption) {
+      Object.assign(metaOption, updateMetaOptionDto);
 
-    return await this.metaOptionsRepository.save(metaOption);
+      return await this.metaOptionsRepository.save(metaOption);
+    }
   }
   //#endregion
 
