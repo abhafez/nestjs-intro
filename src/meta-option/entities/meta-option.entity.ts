@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Post } from '../../posts/post.entity';
 
 /** An arbitrary JSON metadata entry. */
@@ -34,6 +26,5 @@ export class MetaOption {
   @OneToOne(() => Post, (post) => post.metaOptions, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   post: Post;
 }

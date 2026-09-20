@@ -70,12 +70,14 @@ export class Post {
 
   /** Date/time the post should go live. */
   @Column({
-    type: 'timestamp', // 'datetime' in mysql
+    type: 'timestamp',
     nullable: true,
   })
   publishOn?: Date;
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts, {
+    eager: true
+  })
   author: User;
 
   // Work on these in lecture on relationships

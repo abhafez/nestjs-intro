@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
-  IsEnum, IsInt,
+  IsEnum,
+  IsInt,
   IsISO8601,
   IsJSON,
   IsNotEmpty,
@@ -87,7 +88,7 @@ export class CreatePostDto {
   @ApiProperty({
     type: 'integer',
     required: true,
-    example: 1223
+    example: 1223,
   })
   @IsInt()
   @IsNotEmpty()

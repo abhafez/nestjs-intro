@@ -1,10 +1,10 @@
-import {Inject, Injectable} from '@nestjs/common';
-import {GetUserParamsDto} from '../dto/create-user/get-user-params.dto';
-import {AuthService} from '../../auth/auth.service';
-import {Repository} from 'typeorm';
-import {User} from '../user.entity';
-import {InjectRepository} from '@nestjs/typeorm';
-import {CreateUserDto} from '../dto/create-user/create-user.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { GetUserParamsDto } from '../dto/create-user/get-user-params.dto';
+import { AuthService } from '../../auth/auth.service';
+import { Repository } from 'typeorm';
+import { User } from '../user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUserDto } from '../dto/create-user/create-user.dto';
 
 /** Business logic for users. */
 @Injectable()
@@ -74,7 +74,7 @@ export class UsersService {
    * @param id user id
    */
   public async findOneById(id: number) {
-    return await this.userRepository.findOneBy({id});
+    return await this.userRepository.findOneBy({ id });
   }
   //#endregion
 }
