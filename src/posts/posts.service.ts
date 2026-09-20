@@ -1,12 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
-import { UsersService } from '../users/providers/users.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Post } from './post.entity';
-import { MetaOption } from '../meta-option/entities/meta-option.entity';
-import { TagsService } from '../tags/tags.service';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
+import { CreatePostDto } from "./dto/create-post.dto";
+import { PatchPostDto } from "./dto/patch-post.dto";
+import { UsersService } from "../users/providers/users.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Post } from "./post.entity";
+import { MetaOption } from "../meta-option/entities/meta-option.entity";
+import { TagsService } from "../tags/tags.service";
+import { Tag } from "../tags/entities/tag.entity";
 
 /** Business logic for posts. */
 @Injectable()
@@ -78,15 +84,61 @@ export class PostsService {
   /**
    * Updates a post.
    * @param id post id
-   * @param updatePostDto fields to update
+   * @param patchPostDto fields to update
+   * @throws NotFoundException when the post or one of the given tags does not exist
+   * @throws RequestTimeoutException when the database is unreachable
    */
-  async update(id: number, updatePostDto: UpdatePostDto) {
-    const post = await this.postRepository.findOneBy({ id });
+  async update(id: number, patchPostDto: PatchPostDto) {
+    let tags: Tag[] | undefined = undefined;
+    let post: Post | null;
 
-    if (post) {
-      Object.assign(post, updatePostDto);
+    // Find the tags first, so an invalid tag id fails before we touch the post.
+    if (patchPostDto.tags) {
+      try {
+        tags = await this.tagService.findMultipleTags(patchPostDto.tags);
+      } catch {
+        throw new RequestTimeoutException(
+          "Unable to process your request at the moment, please try later.",
+        );
+      }
 
+      if (tags.length !== patchPostDto.tags.length) {
+        throw new BadRequestException(
+          "One or more tag ids were not found, please check them and try again.",
+        );
+      }
+    }
+
+    try {
+      post = await this.postRepository.findOneBy({ id });
+    } catch {
+      throw new RequestTimeoutException(
+        "Unable to process your request at the moment, please try later.",
+      );
+    }
+
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} was not found.`);
+    }
+
+    // Only overwrite the fields the caller actually sent.
+    post.title = patchPostDto.title ?? post.title;
+    post.postType = patchPostDto.postType ?? post.postType;
+    post.slug = patchPostDto.slug ?? post.slug;
+    post.status = patchPostDto.status ?? post.status;
+    post.content = patchPostDto.content ?? post.content;
+    post.schema = patchPostDto.schema ?? post.schema;
+    post.featuredImageUrl =
+      patchPostDto.featuredImageUrl ?? post.featuredImageUrl;
+    post.publishOn = patchPostDto.publishOn ?? post.publishOn;
+    post.tags = tags ?? post.tags;
+
+    try {
       return await this.postRepository.save(post);
+    } catch {
+      throw new RequestTimeoutException(
+        "Unable to process your request at the moment, please try later.",
+      );
     }
   }
   //#endregion

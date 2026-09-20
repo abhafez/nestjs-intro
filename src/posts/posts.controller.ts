@@ -67,7 +67,7 @@ export class PostsController {
   /**
    * Updates a post.
    * @param id post id
-   * @param updatePostDto fields to update
+   * @param patchPostDto fields to update
    */
   @ApiOperation({ summary: 'Update a post' })
   @ApiParam({ name: 'id', type: Number })
@@ -75,8 +75,8 @@ export class PostsController {
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: PatchPostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  async update(@Param('id') id: string, @Body() patchPostDto: PatchPostDto) {
+    return await this.postsService.update(+id, patchPostDto);
   }
   //#endregion
 

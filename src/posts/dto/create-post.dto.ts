@@ -11,6 +11,7 @@ import {
   IsUrl,
   Matches,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreatePostMetaOptionsDto } from './create-post-meta-options.dto';
@@ -86,6 +87,7 @@ export class CreatePostDto {
   /** Arbitrary key/value metadata for the post. */
   @ApiPropertyOptional({ type: [CreatePostMetaOptionsDto], required: false })
   @IsOptional()
+  @ValidateNested()
   @Type(() => CreatePostMetaOptionsDto)
   metaOptions: CreatePostMetaOptionsDto;
 
