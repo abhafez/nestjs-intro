@@ -92,7 +92,7 @@ export class Post {
 
   // Work on these in lecture on relationships
   /** Tags associated with the post. */
-  @ManyToMany(() => Tag, { eager: true })
+  @ManyToMany(() => Tag, (tag) => tag.posts, { eager: true })
   @JoinTable()
   tags?: Tag[];
 

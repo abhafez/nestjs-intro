@@ -1,18 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  RequestTimeoutException,
-} from "@nestjs/common";
-import { CreatePostDto } from "./dto/create-post.dto";
-import { PatchPostDto } from "./dto/patch-post.dto";
-import { UsersService } from "../users/providers/users.service";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Post } from "./post.entity";
-import { MetaOption } from "../meta-option/entities/meta-option.entity";
-import { TagsService } from "../tags/tags.service";
-import { Tag } from "../tags/entities/tag.entity";
+import { BadRequestException, Injectable, NotFoundException, RequestTimeoutException } from '@nestjs/common';
+import { CreatePostDto } from './dto/create-post.dto';
+import { PatchPostDto } from './dto/patch-post.dto';
+import { UsersService } from '../users/providers/users.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from './post.entity';
+import { MetaOption } from '../meta-option/entities/meta-option.entity';
+import { TagsService } from '../tags/tags.service';
+import { Tag } from '../tags/entities/tag.entity';
 
 /** Business logic for posts. */
 @Injectable()
@@ -20,6 +15,7 @@ export class PostsService {
   /**
    * Creates the service.
    * @param userService used to validate that a post's owner exists
+   * @param tagService
    * @param postRepository
    * @param metaOptionRepository
    */
@@ -97,24 +93,18 @@ export class PostsService {
       try {
         tags = await this.tagService.findMultipleTags(patchPostDto.tags);
       } catch {
-        throw new RequestTimeoutException(
-          "Unable to process your request at the moment, please try later.",
-        );
+        throw new RequestTimeoutException('Unable to process your request at the moment, please try later.');
       }
 
       if (tags.length !== patchPostDto.tags.length) {
-        throw new BadRequestException(
-          "One or more tag ids were not found, please check them and try again.",
-        );
+        throw new BadRequestException('One or more tag ids were not found, please check them and try again.');
       }
     }
 
     try {
       post = await this.postRepository.findOneBy({ id });
     } catch {
-      throw new RequestTimeoutException(
-        "Unable to process your request at the moment, please try later.",
-      );
+      throw new RequestTimeoutException('Unable to process your request at the moment, please try later.');
     }
 
     if (!post) {
@@ -128,17 +118,14 @@ export class PostsService {
     post.status = patchPostDto.status ?? post.status;
     post.content = patchPostDto.content ?? post.content;
     post.schema = patchPostDto.schema ?? post.schema;
-    post.featuredImageUrl =
-      patchPostDto.featuredImageUrl ?? post.featuredImageUrl;
+    post.featuredImageUrl = patchPostDto.featuredImageUrl ?? post.featuredImageUrl;
     post.publishOn = patchPostDto.publishOn ?? post.publishOn;
     post.tags = tags ?? post.tags;
 
     try {
       return await this.postRepository.save(post);
     } catch {
-      throw new RequestTimeoutException(
-        "Unable to process your request at the moment, please try later.",
-      );
+      throw new RequestTimeoutException('Unable to process your request at the moment, please try later.');
     }
   }
   //#endregion

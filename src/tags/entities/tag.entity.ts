@@ -1,4 +1,14 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+import { Post } from '../../posts/post.entity';
 
 /** A tag that can be attached to posts. */
 @Entity()
@@ -56,8 +66,12 @@ export class Tag {
   @UpdateDateColumn()
   updateDate: Date;
 
-  // Add this decorartor and column enables soft delete
+  // Add this decorator and column enables soft delete
   /** Timestamp the tag was soft-deleted, if any. */
   @DeleteDateColumn()
   deletedAt: Date;
+
+  /** Many-to-many relationship with posts */
+  @ManyToMany(() => Post, (post) => post.tags)
+  posts: Post[];
 }
