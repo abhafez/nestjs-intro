@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, RequestTimeoutException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PatchPostDto } from './dto/patch-post.dto';
 import { UsersService } from '../users/providers/users.service';
@@ -8,6 +8,7 @@ import { Post } from './post.entity';
 import { MetaOption } from '../meta-option/entities/meta-option.entity';
 import { TagsService } from '../tags/tags.service';
 import { Tag } from '../tags/entities/tag.entity';
+import { handleDatabaseError } from '../app/database/database-error.handler';
 
 /** Business logic for posts. */
 @Injectable()
@@ -31,28 +32,41 @@ export class PostsService {
     public readonly metaOptionRepository: Repository<MetaOption>,
   ) {}
 
+  //#region create
   /**
    * Creates a post.
    * @param createPostDto post data
+   * @throws NotFoundException when the author does not exist
+   * @throws BadRequestException when one or more of the given tag ids do not exist
+   * @throws RequestTimeoutException when the database is unreachable
    */
-  //#region create
   async create(createPostDto: CreatePostDto) {
-    let author = await this.userService.findOneById(createPostDto.authorId);
+    // Both lookups raise their own NotFound/BadRequest, so an invalid author or tag
+    // fails before we write anything.
+    const author = await this.userService.findOneById(createPostDto.authorId);
+    const tags = await this.tagService.findMultipleTags(createPostDto.tags);
 
-    let tags = await this.tagService.findMultipleTags(createPostDto.tags);
-
-    if (author) {
-      let post = this.postRepository.create({ ...createPostDto, author, tags });
+    try {
+      const post = this.postRepository.create({ ...createPostDto, author, tags });
 
       return await this.postRepository.save(post);
+    } catch (error) {
+      handleDatabaseError(error, 'creating the post');
     }
   }
   //#endregion
 
   //#region findAll
-  /** Lists all posts. */
+  /**
+   * Lists all posts.
+   * @throws RequestTimeoutException when the database is unreachable
+   */
   async findAll() {
-    return await this.postRepository.find();
+    try {
+      return await this.postRepository.find();
+    } catch (error) {
+      handleDatabaseError(error, 'listing posts');
+    }
   }
   //#endregion
 
@@ -60,9 +74,17 @@ export class PostsService {
   /**
    * Lists the posts belonging to a user.
    * @param id user id
+   * @throws NotFoundException when the user does not exist
+   * @throws RequestTimeoutException when the database is unreachable
    */
   async findAllForUser(id: number) {
-    return await this.postRepository.find({ where: { author: { id } } });
+    await this.userService.findOneById(id);
+
+    try {
+      return await this.postRepository.find({ where: { author: { id } } });
+    } catch (error) {
+      handleDatabaseError(error, "listing the user's posts");
+    }
   }
   //#endregion
 
@@ -70,9 +92,23 @@ export class PostsService {
   /**
    * Finds a single post by id.
    * @param id post id
+   * @throws NotFoundException when no post has that id
+   * @throws RequestTimeoutException when the database is unreachable
    */
   async findOne(id: number) {
-    return await this.postRepository.findOneBy({ id });
+    let post: Post | null;
+
+    try {
+      post = await this.postRepository.findOneBy({ id });
+    } catch (error) {
+      handleDatabaseError(error, 'looking up the post');
+    }
+
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} was not found.`);
+    }
+
+    return post;
   }
   //#endregion
 
@@ -81,35 +117,19 @@ export class PostsService {
    * Updates a post.
    * @param id post id
    * @param patchPostDto fields to update
-   * @throws NotFoundException when the post or one of the given tags does not exist
+   * @throws NotFoundException when the post does not exist
+   * @throws BadRequestException when one or more of the given tag ids do not exist
    * @throws RequestTimeoutException when the database is unreachable
    */
   async update(id: number, patchPostDto: PatchPostDto) {
     let tags: Tag[] | undefined = undefined;
-    let post: Post | null;
 
-    // Find the tags first, so an invalid tag id fails before we touch the post.
+    // Resolve the tags first, so an invalid tag id fails before we touch the post.
     if (patchPostDto.tags) {
-      try {
-        tags = await this.tagService.findMultipleTags(patchPostDto.tags);
-      } catch {
-        throw new RequestTimeoutException('Unable to process your request at the moment, please try later.');
-      }
-
-      if (tags.length !== patchPostDto.tags.length) {
-        throw new BadRequestException('One or more tag ids were not found, please check them and try again.');
-      }
+      tags = await this.tagService.findMultipleTags(patchPostDto.tags);
     }
 
-    try {
-      post = await this.postRepository.findOneBy({ id });
-    } catch {
-      throw new RequestTimeoutException('Unable to process your request at the moment, please try later.');
-    }
-
-    if (!post) {
-      throw new NotFoundException(`Post with id ${id} was not found.`);
-    }
+    const post = await this.findOne(id);
 
     // Only overwrite the fields the caller actually sent.
     post.title = patchPostDto.title ?? post.title;
@@ -124,8 +144,8 @@ export class PostsService {
 
     try {
       return await this.postRepository.save(post);
-    } catch {
-      throw new RequestTimeoutException('Unable to process your request at the moment, please try later.');
+    } catch (error) {
+      handleDatabaseError(error, 'updating the post');
     }
   }
   //#endregion
@@ -134,9 +154,19 @@ export class PostsService {
   /**
    * Removes a post.
    * @param id post id
+   * @throws NotFoundException when no post has that id
+   * @throws RequestTimeoutException when the database is unreachable
    */
   async remove(id: number) {
-    await this.postRepository.delete(id);
+    try {
+      const result = await this.postRepository.delete(id);
+
+      if (!result.affected) {
+        throw new NotFoundException(`Post with id ${id} was not found.`);
+      }
+    } catch (error) {
+      handleDatabaseError(error, 'deleting the post');
+    }
 
     return {
       deleted: true,
