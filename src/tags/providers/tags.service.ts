@@ -5,6 +5,8 @@ import { Tag } from '../entities/tag.entity';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { handleDatabaseError } from '../../app/database/database-error.handler';
+import { PaginationProvider } from '../../common/pagination/providers/pagination.provider';
+import { GetTagsDto } from '../dto/get-tags.dto';
 
 /** Business logic for tags. */
 @Injectable()
@@ -14,6 +16,8 @@ export class TagsService {
    * @param tagsRepository
    */
   constructor(
+    private readonly paginationProvider: PaginationProvider,
+
     @InjectRepository(Tag)
     private readonly tagsRepository: Repository<Tag>,
   ) {}
@@ -37,12 +41,13 @@ export class TagsService {
 
   //#region findAll
   /**
-   * Lists all tags.
+   * Lists tags one page at a time.
+   * @param query page/limit from the query string
    * @throws RequestTimeoutException when the database is unreachable
    */
-  async findAll() {
+  async findAll(query: GetTagsDto) {
     try {
-      return await this.tagsRepository.find();
+      return await this.paginationProvider.paginateQuery(query, this.tagsRepository);
     } catch (error) {
       handleDatabaseError(error, 'listing tags');
     }

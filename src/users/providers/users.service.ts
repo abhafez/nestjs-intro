@@ -8,6 +8,8 @@ import { CreateUserDto } from '../dto/create-user/create-user.dto';
 import { handleDatabaseError } from '../../app/database/database-error.handler';
 import { CreateMultipleUsersProvider } from './create-multiple-users.provider';
 import { CreateMultipleUsersDto } from '../dto/create-user/create-multiple-users.dto';
+import { PaginationProvider } from '../../common/pagination/providers/pagination.provider';
+import { GetUsersDto } from '../dto/get-users.dto';
 
 /** Business logic for users. */
 @Injectable()
@@ -23,6 +25,8 @@ export class UsersService {
 
     @Inject()
     private readonly createMultipleUsersProvider: CreateMultipleUsersProvider,
+
+    private readonly paginationProvider: PaginationProvider,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -65,21 +69,17 @@ export class UsersService {
    * Finds a single user by id if `getUserParamDto.id` is set, otherwise
    * lists users page by page.
    * @param getUserParamDto route params, optionally carrying a single user id
-   * @param limit page size
-   * @param page page number
+   * @param query page/limit from the query string
    * @throws NotFoundException when a requested user id does not exist
    * @throws RequestTimeoutException when the database is unreachable
    */
-  public async findAll(getUserParamDto: GetUserParamsDto, limit: number, page: number) {
+  public async findAll(getUserParamDto: GetUserParamsDto, query: GetUsersDto) {
     if (getUserParamDto.id) {
       return await this.findOneById(getUserParamDto.id);
     }
 
     try {
-      return await this.userRepository.find({
-        skip: (page - 1) * limit,
-        take: limit,
-      });
+      return await this.paginationProvider.paginateQuery(query, this.userRepository);
     } catch (error) {
       handleDatabaseError(error, 'listing users');
     }

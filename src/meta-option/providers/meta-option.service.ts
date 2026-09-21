@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MetaOption } from '../entities/meta-option.entity';
 import { Repository } from 'typeorm';
 import { handleDatabaseError } from '../../app/database/database-error.handler';
+import { PaginationProvider } from '../../common/pagination/providers/pagination.provider';
+import { GetMetaOptionsDto } from '../dto/get-meta-options.dto';
 
 /** Business logic for meta options. */
 @Injectable()
@@ -14,6 +16,8 @@ export class MetaOptionService {
    * @param metaOptionsRepository
    */
   constructor(
+    private readonly paginationProvider: PaginationProvider,
+
     @InjectRepository(MetaOption)
     private readonly metaOptionsRepository: Repository<MetaOption>,
   ) {}
@@ -37,12 +41,13 @@ export class MetaOptionService {
 
   //#region findAll
   /**
-   * Lists all meta options.
+   * Lists meta options one page at a time.
+   * @param query page/limit from the query string
    * @throws RequestTimeoutException when the database is unreachable
    */
-  async findAll() {
+  async findAll(query: GetMetaOptionsDto) {
     try {
-      return await this.metaOptionsRepository.find();
+      return await this.paginationProvider.paginateQuery(query, this.metaOptionsRepository);
     } catch (error) {
       handleDatabaseError(error, 'listing meta options');
     }

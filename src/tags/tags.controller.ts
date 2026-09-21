@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TagsService } from './providers/tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { GetTagsDto } from './dto/get-tags.dto';
 
 /** Tag CRUD routes. */
 @ApiTags('Tags')
@@ -25,12 +26,15 @@ export class TagsController {
   //#endregion
 
   //#region GET /tags
-  /** Lists all tags. */
+  /**
+   * Lists tags one page at a time.
+   * @param query page/limit
+   */
   @ApiOperation({ summary: 'List all tags' })
   @ApiResponse({ status: 200, description: 'Tags returned' })
   @Get()
-  findAll() {
-    return this.tagsService.findAll();
+  findAll(@Query() query: GetTagsDto) {
+    return this.tagsService.findAll(query);
   }
   //#endregion
 

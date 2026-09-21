@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MetaOptionService } from './providers/meta-option.service';
 import { CreateMetaOptionDto } from './dto/create-meta-option.dto';
 import { UpdateMetaOptionDto } from './dto/update-meta-option.dto';
+import { GetMetaOptionsDto } from './dto/get-meta-options.dto';
 
 /** Meta option CRUD routes. */
 @ApiTags('Meta Options')
@@ -25,12 +26,15 @@ export class MetaOptionController {
   //#endregion
 
   //#region GET /meta-option
-  /** Lists all meta options. */
+  /**
+   * Lists meta options one page at a time.
+   * @param query page/limit
+   */
   @ApiOperation({ summary: 'List all meta options' })
   @ApiResponse({ status: 200, description: 'Meta options returned' })
   @Get()
-  findAll() {
-    return this.metaOptionService.findAll();
+  findAll(@Query() query: GetMetaOptionsDto) {
+    return this.metaOptionService.findAll(query);
   }
   //#endregion
 
