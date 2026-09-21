@@ -9,4 +9,7 @@ export default Joi.object({
   DATABASE_USER: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
   JWT_TOKEN: Joi.string().required(),
+  JWT_TOKEN_TTL: Joi.string().required(),
+  JWT_AUDIENCE: Joi.string().required(),
+  JWT_ISSUER: Joi.string().required(),
 });
