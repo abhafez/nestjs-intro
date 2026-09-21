@@ -11,6 +11,7 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiAuth } from '../auth/decorators/api-auth.decorator';
 import { MetaOptionService } from './providers/meta-option.service';
 import { CreateMetaOptionDto } from './dto/create-meta-option.dto';
 import { UpdateMetaOptionDto } from './dto/update-meta-option.dto';
@@ -26,6 +27,7 @@ import { ValidationErrorResponseDto } from '../common/dto/validation-error-respo
   description: 'The database was unreachable or the query failed unexpectedly.',
   type: ApiErrorResponseDto,
 })
+@ApiAuth()
 @Controller('meta-option')
 export class MetaOptionController {
   constructor(private readonly metaOptionService: MetaOptionService) {}

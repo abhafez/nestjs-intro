@@ -12,3 +12,10 @@ export const DEFAULT_LIMIT = 10;
 export const REQUEST_USER_KEY = 'user';
 /** Metadata key holding the {@link AuthType} list set by the `@Auth` decorator. */
 export const AUTH_TYPE_KEY = 'authType';
+/**
+ * Name of the bearer security scheme registered with Swagger in `main.ts`.
+ *
+ * `@ApiAuth()` references it so the "Authorize" button in Swagger UI feeds the token
+ * to every protected route.
+ */
+export const ACCESS_TOKEN_SECURITY_SCHEME = 'access-token';

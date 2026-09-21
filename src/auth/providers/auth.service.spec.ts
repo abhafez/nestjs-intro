@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { SignInProvider } from './sign-in.provider';
+import SignInProvider from './sign-in.provider';
+import RefreshTokensProvider from './refresh-tokens.provider';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -12,6 +13,10 @@ describe('AuthService', () => {
         {
           provide: SignInProvider,
           useValue: { signIn: jest.fn() },
+        },
+        {
+          provide: RefreshTokensProvider,
+          useValue: { refreshToken: jest.fn() },
         },
       ],
     }).compile();

@@ -1,24 +1,22 @@
-import { Inject, Injectable, RequestTimeoutException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, RequestTimeoutException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../../users/providers/users.service';
 import { HashingProvider } from './hashing.provider';
-import { SignInDto } from '../dto/signInDto';
-import { JwtService } from '@nestjs/jwt';
-import jwtConfig from '../jwt.config';
-import { type ConfigType } from '@nestjs/config';
-import { ActiveUserData } from '../interfaces/active-user-data.interface';
+import { SignInDto } from '../dto/sign-in.dto';
+import { GenerateTokensProvider } from './generate-tokens.provider';
 
 /** Authenticates a user from an email/password pair. */
 @Injectable()
-export class SignInProvider {
+class SignInProvider {
   /**
    * Creates the provider.
    * @param usersService used to look the user up by email
    * @param hashingProvider used to compare the supplied password with the stored hash
-   * @param jwtService
-   * @param jwtConfiguration
+   * @param generateTokensProvider
    */
   constructor(
-    // Injecting UserService
+    /**
+     * Injecting UserService
+     */
     private readonly usersService: UsersService,
 
     /**
@@ -26,12 +24,10 @@ export class SignInProvider {
      */
     private readonly hashingProvider: HashingProvider,
 
-    /** Inject JWT service */
-    private readonly jwtService: JwtService,
-
-    /** Inject JWT Config */
-    @Inject(jwtConfig.KEY)
-    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    /**
+     * Inject Generate tokens provider
+     */
+    private readonly generateTokensProvider: GenerateTokensProvider,
   ) {}
 
   /**
@@ -63,18 +59,8 @@ export class SignInProvider {
       throw new UnauthorizedException('Password does not match');
     }
 
-    const payload: ActiveUserData = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    const accessToken = await this.jwtService.signAsync(payload, {
-      issuer: this.jwtConfiguration.issuer,
-      secret: this.jwtConfiguration.secret,
-      expiresIn: this.jwtConfiguration.accessTokenTTL,
-      audience: this.jwtConfiguration.audience,
-    });
-
-    return { token: accessToken };
+    return await this.generateTokensProvider.generateTokens(user);
   }
 }
+
+export default SignInProvider;

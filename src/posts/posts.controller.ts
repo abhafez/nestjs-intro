@@ -24,6 +24,7 @@ import { PostType } from './enums/post-type.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { AuthType } from '../auth/enums/auth-type.enum';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
+import { ApiAuth } from '../auth/decorators/api-auth.decorator';
 import type { ActiveUserData } from '../auth/interfaces/active-user-data.interface';
 
 /** Post CRUD routes. */
@@ -38,16 +39,19 @@ export class PostsController {
 
   //#region POST /posts
   /**
-   * Creates a post.
-   * @param createPostDto post data
-   * @param user
+   * Creates a post owned by the caller.
+   * @param createPostDto post data; the author is not part of it
+   * @param user the token payload of the signed-in caller, used as the post's author
    */
   @ApiOperation({
     summary: 'Create a post',
     description:
-      'Validates the author and every tag id before writing. `metaOptions` is a single object, not an array - ' +
-      'the post/meta-option relation is one-to-one and the meta option is cascade-inserted with the post.',
+      'The author is taken from the access token, so the request body carries no `authorId` and a caller ' +
+      'cannot post as somebody else. Every tag id is resolved before writing, so an unknown tag fails the ' +
+      'request without inserting anything. `metaOptions` is a single object, not an array - the ' +
+      'post/meta-option relation is one-to-one and the meta option is cascade-inserted with the post.',
   })
+  @ApiAuth()
   @ApiBody({
     type: CreatePostDto,
     examples: {
@@ -58,7 +62,6 @@ export class PostsController {
           postType: PostType.POST,
           slug: 'getting-started-with-nestjs-providers',
           status: PostStatus.DRAFT,
-          authorId: 1,
         },
       },
       full: {
@@ -74,14 +77,13 @@ export class PostsController {
           publishOn: '2026-10-01T08:00:00.000Z',
           tags: [1, 2],
           metaOptions: { metaValue: 'elit quis labore tempor eiusmod' },
-          authorId: 1,
         },
       },
     },
   })
   @ApiCreatedResponse({ description: 'The post that was written, with its author, tags and meta option.', type: Post })
   @ApiBadRequestResponse({ description: 'Validation failed.', type: ValidationErrorResponseDto })
-  @ApiNotFoundResponse({ description: 'The author id does not exist.', type: ApiErrorResponseDto })
+  @ApiNotFoundResponse({ description: 'The user the token belongs to no longer exists.', type: ApiErrorResponseDto })
   @ApiConflictResponse({
     description: 'A post with the same slug already exists, or a required column was left null.',
     type: ApiErrorResponseDto,
@@ -100,8 +102,8 @@ export class PostsController {
   @ApiOperation({
     summary: 'List all posts',
     description:
-      'Returns one page of posts wrapped in the standard `data`/`meta`/`links` envelope. ' +
-      '`startDate` and `endDate` are validated but not yet applied to the query.',
+      'Public - no access token required. Returns one page of posts wrapped in the standard ' +
+      '`data`/`meta`/`links` envelope. `startDate` and `endDate` are validated but not yet applied to the query.',
   })
   @ApiPaginatedResponse(Post, 'One page of posts, newest first as stored.')
   @ApiBadRequestResponse({ description: 'A query parameter failed validation.', type: ValidationErrorResponseDto })
@@ -122,6 +124,7 @@ export class PostsController {
     summary: "List a user's posts",
     description: 'Confirms the user exists, then returns their posts in the same paginated envelope as `GET /posts`.',
   })
+  @ApiAuth()
   @ApiParam({ name: 'id', type: Number, description: 'Id of the author whose posts to list.', example: 1 })
   @ApiPaginatedResponse(Post, "One page of the user's posts.")
   @ApiBadRequestResponse({ description: 'The id is not an integer.', type: ValidationErrorResponseDto })
@@ -141,6 +144,7 @@ export class PostsController {
     summary: 'Get a post by id',
     description: 'Author, tags and meta option are eagerly loaded and returned with the post.',
   })
+  @ApiAuth()
   @ApiParam({ name: 'id', type: Number, description: 'Id of the post to fetch.', example: 1 })
   @ApiOkResponse({ description: 'The requested post.', type: Post })
   @ApiNotFoundResponse({ description: 'No post has that id.', type: ApiErrorResponseDto })
@@ -161,6 +165,7 @@ export class PostsController {
     description:
       'Every field is optional; omitted fields keep their current value. Sending `tags` replaces the whole tag set.',
   })
+  @ApiAuth()
   @ApiParam({ name: 'id', type: Number, description: 'Id of the post to update.', example: 1 })
   @ApiBody({
     type: PatchPostDto,
@@ -196,6 +201,7 @@ export class PostsController {
     summary: 'Delete a post',
     description: 'Hard-deletes the row. The attached meta option is removed with it via `ON DELETE CASCADE`.',
   })
+  @ApiAuth()
   @ApiParam({ name: 'id', type: Number, description: 'Id of the post to delete.', example: 1 })
   @ApiOkResponse({
     description: 'Confirmation that the post was deleted.',

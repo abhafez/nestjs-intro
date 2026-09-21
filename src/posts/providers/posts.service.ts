@@ -22,6 +22,7 @@ export class PostsService {
    * @param userService used to validate that a post's owner exists
    * @param tagService used to resolve the tag ids attached to a post
    * @param paginationProvider turns a query into a paginated response
+   * @param createPostProvider writes new posts
    * @param postRepository repository for posts
    * @param metaOptionRepository repository for meta options
    */
@@ -32,6 +33,7 @@ export class PostsService {
 
     private readonly paginationProvider: PaginationProvider,
 
+    /** Writes new posts; see {@link CreatePostProvider}. */
     private readonly createPostProvider: CreatePostProvider,
 
     /** Repository for {@link Post}. */
@@ -45,9 +47,9 @@ export class PostsService {
 
   //#region create
   /**
-   * Creates a post.
-   * @param createPostDto post data
-   * @param user
+   * Creates a post owned by the caller. Delegates to {@link CreatePostProvider}.
+   * @param createPostDto post data; it carries no author
+   * @param user token payload of the caller, whose `sub` becomes the post's author
    * @throws NotFoundException when the author does not exist
    * @throws BadRequestException when one or more of the given tag ids do not exist
    * @throws RequestTimeoutException when the database is unreachable

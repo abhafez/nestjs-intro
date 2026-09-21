@@ -11,6 +11,7 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiAuth } from '../auth/decorators/api-auth.decorator';
 import { CreateUserDto } from './dto/create-user/create-user.dto';
 import { GetUserParamsDto } from './dto/create-user/get-user-params.dto';
 import { PatchUserDto } from './dto/create-user/patch-user.dto';
@@ -29,6 +30,7 @@ import { MessageResponseDto } from '../common/dto/message-response.dto';
   description: 'The database was unreachable or the query failed unexpectedly.',
   type: ApiErrorResponseDto,
 })
+@ApiAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}

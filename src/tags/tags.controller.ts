@@ -11,6 +11,7 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiAuth } from '../auth/decorators/api-auth.decorator';
 import { TagsService } from './providers/tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
@@ -26,6 +27,7 @@ import { ValidationErrorResponseDto } from '../common/dto/validation-error-respo
   description: 'The database was unreachable or the query failed unexpectedly.',
   type: ApiErrorResponseDto,
 })
+@ApiAuth()
 @Controller('tags')
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}

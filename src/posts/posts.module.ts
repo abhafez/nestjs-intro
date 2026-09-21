@@ -9,6 +9,13 @@ import { TagsModule } from '../tags/tags.module';
 import { PaginationModule } from '../common/pagination/pagination.module';
 import { CreatePostProvider } from './providers/create-post.provider';
 
+/**
+ * Posts and the meta options attached to them.
+ *
+ * Imports `UsersModule` and `TagsModule` because a post cannot be written without resolving its
+ * author and tag ids first, and `PaginationModule` because every list route answers with the
+ * shared `data`/`meta`/`links` envelope.
+ */
 @Module({
   controllers: [PostsController],
   providers: [PostsService, CreatePostProvider],
