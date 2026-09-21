@@ -26,6 +26,7 @@ import { PaginationModule } from '../common/pagination/pagination.module';
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from '../auth/jwt.config';
 import { AuthenticationGuard } from '../auth/guards/authentication/authentication.guard';
+import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 
 /** Current `NODE_ENV`, used to pick which `.env.*` file the config module loads. */
 const ENV = process.env.NODE_ENV;
@@ -50,6 +51,7 @@ const ENV = process.env.NODE_ENV;
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
     },
+    AccessTokenGuard,
   ],
   imports: [
     ConfigModule.forRoot({

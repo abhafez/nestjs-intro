@@ -8,7 +8,7 @@ import { SignInProvider } from './providers/sign-in.provider';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from './jwt.config';
-import { AccessTokenGuard } from './guards/access-token/access-token-guard.service';
+import { AccessTokenGuard } from './guards/access-token/access-token.guard';
 import { AuthenticationGuard } from './guards/authentication/authentication.guard';
 
 @Module({
