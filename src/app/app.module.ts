@@ -31,6 +31,15 @@ import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard
 /** Current `NODE_ENV`, used to pick which `.env.*` file the config module loads. */
 const ENV = process.env.NODE_ENV;
 
+/**
+ * Env files to read, highest precedence first.
+ *
+ * The environment-specific file wins where it defines a value, and `.env` fills in the rest.
+ * The fallback matters under Jest, which sets `NODE_ENV=test` on its own: without it, a missing
+ * `.env.test` means nothing is loaded at all and every `required()` in the schema fails at boot.
+ */
+const ENV_FILE_PATH = ENV ? [`.env.${ENV}`, '.env'] : ['.env'];
+
 @Module({
   controllers: [AppController],
   providers: [
@@ -56,7 +65,7 @@ const ENV = process.env.NODE_ENV;
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: !ENV ? '.env' : `.env.${ENV}`,
+      envFilePath: ENV_FILE_PATH,
       load: [appConfig, databaseConfig],
       validationSchema: environmentValidation,
     }),
