@@ -1,7 +1,6 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { GetUserParamsDto } from '../dto/create-user/get-user-params.dto';
-import { AuthService } from '../../auth/providers/auth.service';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dto/create-user/create-user.dto';
@@ -10,21 +9,27 @@ import { CreateMultipleUsersProvider } from './create-multiple-users.provider';
 import { CreateMultipleUsersDto } from '../dto/create-user/create-multiple-users.dto';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.provider';
 import { GetUsersDto } from '../dto/get-users.dto';
+import { CreateUserProvider } from './create-user.provider';
+import { FindOneUserByProvider } from './find-one-user-by.provider';
 
 /** Business logic for users. */
 @Injectable()
 export class UsersService {
   /**
    * Creates the service.
-   * @param authService injected for future auth-aware user queries
+   * @param createUserProvider
+   * @param createMultipleUsersProvider
+   * @param findOneUserByProvider
+   * @param paginationProvider
    * @param userRepository
    */
   constructor(
-    @Inject()
-    private readonly authService: AuthService,
+    private readonly createUserProvider: CreateUserProvider,
 
     @Inject()
     private readonly createMultipleUsersProvider: CreateMultipleUsersProvider,
+
+    private readonly findOneUserByProvider: FindOneUserByProvider,
 
     private readonly paginationProvider: PaginationProvider,
 
@@ -40,27 +45,7 @@ export class UsersService {
    * @throws RequestTimeoutException when the database is unreachable
    */
   public async createUser(createUserDto: CreateUserDto) {
-    let existingUser: User | null;
-
-    try {
-      existingUser = await this.userRepository.findOne({
-        where: { email: createUserDto.email },
-      });
-    } catch (error) {
-      handleDatabaseError(error, 'checking whether the email is already taken');
-    }
-
-    if (existingUser) {
-      throw new ConflictException(`A user with the email ${createUserDto.email} already exists.`);
-    }
-
-    try {
-      const newUser = this.userRepository.create(createUserDto);
-
-      return await this.userRepository.save(newUser);
-    } catch (error) {
-      handleDatabaseError(error, 'creating the user');
-    }
+    return this.createUserProvider.createUser(createUserDto);
   }
   //#endregion
 
@@ -86,6 +71,18 @@ export class UsersService {
   }
   //#endregion
 
+  //#region findOneBy
+  /**
+   * Finds a single user matching the given columns, e.g. `findOneBy({ email })`.
+   * @param where columns to match on; every key must be satisfied
+   * @throws NotFoundException when no user matches
+   * @throws RequestTimeoutException when the database is unreachable
+   */
+  public async findOneBy(where: FindOptionsWhere<User>) {
+    return await this.findOneUserByProvider.findOneBy(where);
+  }
+  //#endregion
+
   //#region findOneById
   /**
    * Finds a single user by id.
@@ -94,19 +91,7 @@ export class UsersService {
    * @throws RequestTimeoutException when the database is unreachable
    */
   public async findOneById(id: number) {
-    let user: User | null;
-
-    try {
-      user = await this.userRepository.findOneBy({ id });
-    } catch (error) {
-      handleDatabaseError(error, 'looking up the user');
-    }
-
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} was not found.`);
-    }
-
-    return user;
+    return await this.findOneBy({ id });
   }
   //#endregion
 
@@ -115,7 +100,7 @@ export class UsersService {
    * Creates multiple users using query runner.
    */
   public async bulkUsersCreate(bulkUsers: CreateMultipleUsersDto) {
-    this.createMultipleUsersProvider.createBulkUsers(bulkUsers);
+    await this.createMultipleUsersProvider.createBulkUsers(bulkUsers);
   }
   //#endregion
 }

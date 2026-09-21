@@ -1,25 +1,23 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { UsersService } from '../../users/providers/users.service';
+import { Injectable } from '@nestjs/common';
+import { SignInDto } from '../dto/signInDto';
+import { SignInProvider } from './sign-in.provider';
 
-/** Authentication logic, kept separate from {@link UsersService} to avoid a circular module dependency. */
+/** Authentication logic, kept separate from `UsersService` to avoid a circular module dependency. */
 @Injectable()
 export class AuthService {
   /**
-   * Injects {@link UsersService} lazily to break the Auth/Users circular dependency.
-   * @param userService users lookup service
+   * Creates the service.
+   * @param signInProvider verifies credentials
    */
-  constructor(
-    @Inject(forwardRef(() => UsersService))
-    private readonly userService: UsersService,
-  ) {}
+  constructor(private readonly signInProvider: SignInProvider) {}
 
-  //#region login
+  //#region signIn
   /**
    * Looks up the user being logged in.
-   * @param id user id
+   * @param signInDto
    */
-  login(id: number) {
-    return this.userService.findOneById(id);
+  async signIn(signInDto: SignInDto) {
+    return await this.signInProvider.signIn(signInDto);
   }
   //#endregion
 }

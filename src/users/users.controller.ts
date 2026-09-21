@@ -6,6 +6,7 @@ import { PatchUserDto } from './dto/create-user/patch-user.dto';
 import { UsersService } from './providers/users.service';
 import { CreateMultipleUsersDto } from './dto/create-user/create-multiple-users.dto';
 import { GetUsersDto } from './dto/get-users.dto';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 /** User CRUD routes. */
 @ApiTags('Users')
@@ -34,13 +35,20 @@ export class UsersController {
   /**
    * Creates a user.
    * @param createUserDto user data
+   * @param i18n resolves the success message for the request's language
    */
   @ApiOperation({ summary: 'Create a user' })
-  @ApiResponse({ status: 201, description: 'User created' })
+  @ApiResponse({
+    status: 201,
+    description: 'User created',
+    schema: { example: { message: 'User created successfully.' } },
+  })
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  async createUser(@Body() createUserDto: CreateUserDto, @I18n() i18n: I18nContext) {
+    await this.userService.createUser(createUserDto);
+
+    return { message: i18n.t('messages.USER_CREATED') };
   }
   //#endregion
 
@@ -61,7 +69,7 @@ export class UsersController {
   //#region POST /user/add-bulk
   /**
    * Add bulk users.
-   * @param createUserDtos: CreateUserDto[]
+   * @param createUserDtos
    */
   @Post('add-bulk')
   public bulkCreateUsers(@Body() createUserDtos: CreateMultipleUsersDto) {
