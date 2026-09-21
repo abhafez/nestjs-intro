@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PostsService } from './posts.service';
+import { PostsService } from './providers/posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PatchPostDto } from './dto/patch-post.dto';
+import { GetPostsDto } from './dto/get-posts.dto';
 
 /** Post CRUD routes. */
 @ApiTags('Posts')
@@ -29,8 +30,8 @@ export class PostsController {
   @ApiOperation({ summary: 'List all posts' })
   @ApiResponse({ status: 200, description: 'Posts returned' })
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findAll(@Query() postQuery: GetPostsDto) {
+    return this.postsService.findAll(postQuery);
   }
   //#endregion
 
@@ -43,8 +44,8 @@ export class PostsController {
   @ApiParam({ name: 'id', type: Number, description: 'User id' })
   @ApiResponse({ status: 200, description: "User's posts returned" })
   @Get('user/:id')
-  getAllForUser(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.findAllForUser(id);
+  getAllForUser(@Param('id', ParseIntPipe) id: number, @Query() postQuery: GetPostsDto) {
+    return this.postsService.findAllForUser(id, postQuery);
   }
   //#endregion
 

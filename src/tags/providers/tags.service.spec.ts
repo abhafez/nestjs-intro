@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TagsService } from './tags.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Tag } from './entities/tag.entity';
+import { Tag } from '../entities/tag.entity';
 
 describe('TagsService', () => {
   let service: TagsService;

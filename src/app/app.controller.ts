@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AppService } from './app.service';
+import { AppService } from './providers/app.service';
 
 /** Root controller exposing the application health-check route. */
 @ApiTags('App')

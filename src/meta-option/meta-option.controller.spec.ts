@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MetaOptionController } from './meta-option.controller';
-import { MetaOptionService } from './meta-option.service';
+import { MetaOptionService } from './providers/meta-option.service';
 import { MetaOption } from './entities/meta-option.entity';
 
 describe('MetaOptionController', () => {

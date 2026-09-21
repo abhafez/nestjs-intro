@@ -1,14 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
-import { PatchPostDto } from './dto/patch-post.dto';
-import { UsersService } from '../users/providers/users.service';
+import { CreatePostDto } from '../dto/create-post.dto';
+import { PatchPostDto } from '../dto/patch-post.dto';
+import { UsersService } from '../../users/providers/users.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './post.entity';
-import { MetaOption } from '../meta-option/entities/meta-option.entity';
-import { TagsService } from '../tags/tags.service';
-import { Tag } from '../tags/entities/tag.entity';
-import { handleDatabaseError } from '../app/database/database-error.handler';
+import { Post } from '../post.entity';
+import { MetaOption } from '../../meta-option/entities/meta-option.entity';
+import { TagsService } from '../../tags/providers/tags.service';
+import { Tag } from '../../tags/entities/tag.entity';
+import { handleDatabaseError } from '../../app/database/database-error.handler';
+import { GetPostsDto } from '../dto/get-posts.dto';
+import { PaginationProvider } from '../../common/pagination/providers/pagination.provider';
 
 /** Business logic for posts. */
 @Injectable()
@@ -24,6 +26,8 @@ export class PostsService {
     private readonly userService: UsersService,
 
     private readonly tagService: TagsService,
+
+    private readonly paginationProvider: PaginationProvider,
 
     @InjectRepository(Post)
     public readonly postRepository: Repository<Post>,
@@ -61,9 +65,9 @@ export class PostsService {
    * Lists all posts.
    * @throws RequestTimeoutException when the database is unreachable
    */
-  async findAll() {
+  async findAll(query: GetPostsDto) {
     try {
-      return await this.postRepository.find();
+      return await this.paginationProvider.paginateQuery(query, this.postRepository);
     } catch (error) {
       handleDatabaseError(error, 'listing posts');
     }
@@ -74,14 +78,17 @@ export class PostsService {
   /**
    * Lists the posts belonging to a user.
    * @param id user id
+   * @param query
    * @throws NotFoundException when the user does not exist
    * @throws RequestTimeoutException when the database is unreachable
    */
-  async findAllForUser(id: number) {
+  async findAllForUser(id: number, query: GetPostsDto) {
     await this.userService.findOneById(id);
 
     try {
-      return await this.postRepository.find({ where: { author: { id } } });
+      return await this.paginationProvider.paginateQuery(query, this.postRepository, {
+        where: { author: { id } },
+      });
     } catch (error) {
       handleDatabaseError(error, "listing the user's posts");
     }

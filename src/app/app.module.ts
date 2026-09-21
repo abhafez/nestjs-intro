@@ -11,7 +11,7 @@ import {
 } from 'nestjs-i18n';
 import { join } from 'path';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppService } from './providers/app.service';
 import { UsersModule } from '../users/users.module';
 import { PostsModule } from '../posts/posts.module';
 import { AuthModule } from '../auth/auth.module';
@@ -22,6 +22,7 @@ import { TagsModule } from '../tags/tags.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import enviromentValidation from './config/enviroment.validation';
+import { PaginationModule } from '../common/pagination/pagination.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -70,10 +71,11 @@ const ENV = process.env.NODE_ENV;
       resolvers: [AcceptLanguageResolver],
     }),
     AuthModule,
-    PostsModule,
-    UsersModule,
     MetaOptionModule,
+    PostsModule,
+    PaginationModule,
     TagsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

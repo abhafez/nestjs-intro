@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TagsController } from './tags.controller';
-import { TagsService } from './tags.service';
+import { TagsService } from './providers/tags.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
 

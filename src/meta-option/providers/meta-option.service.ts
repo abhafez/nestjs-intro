@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateMetaOptionDto } from './dto/create-meta-option.dto';
-import { UpdateMetaOptionDto } from './dto/update-meta-option.dto';
+import { CreateMetaOptionDto } from '../dto/create-meta-option.dto';
+import { UpdateMetaOptionDto } from '../dto/update-meta-option.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MetaOption } from './entities/meta-option.entity';
+import { MetaOption } from '../entities/meta-option.entity';
 import { Repository } from 'typeorm';
-import { handleDatabaseError } from '../app/database/database-error.handler';
+import { handleDatabaseError } from '../../app/database/database-error.handler';
 
 /** Business logic for meta options. */
 @Injectable()

@@ -6,6 +6,7 @@ import {
   IsISO8601,
   IsJSON,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   IsUrl,
@@ -84,12 +85,20 @@ export class CreatePostDto {
   @IsInt({ each: true })
   tags: number[];
 
-  /** Arbitrary key/value metadata for the post. */
-  @ApiPropertyOptional({ type: [CreatePostMetaOptionsDto], required: false })
+  /**
+   * Arbitrary key/value metadata for the post.
+   *
+   * A post has exactly one meta option ({@link Post.metaOptions} is `@OneToOne`), so this
+   * must be a single object. `@IsObject` rejects an array outright — without it an array
+   * is transformed into a `metaValue`-less instance and cascades a null row into
+   * `meta_option`.
+   */
+  @ApiPropertyOptional({ type: CreatePostMetaOptionsDto })
   @IsOptional()
+  @IsObject()
   @ValidateNested()
   @Type(() => CreatePostMetaOptionsDto)
-  metaOptions: CreatePostMetaOptionsDto;
+  metaOptions?: CreatePostMetaOptionsDto;
 
   @ApiProperty({
     type: 'integer',

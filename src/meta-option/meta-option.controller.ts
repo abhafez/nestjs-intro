@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { MetaOptionService } from './meta-option.service';
+import { MetaOptionService } from './providers/meta-option.service';
 import { CreateMetaOptionDto } from './dto/create-meta-option.dto';
 import { UpdateMetaOptionDto } from './dto/update-meta-option.dto';
 

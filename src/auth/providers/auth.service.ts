@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { UsersService } from '../users/providers/users.service';
+import { UsersService } from '../../users/providers/users.service';
 
 /** Authentication logic, kept separate from {@link UsersService} to avoid a circular module dependency. */
 @Injectable()
