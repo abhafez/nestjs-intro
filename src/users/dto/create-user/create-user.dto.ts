@@ -11,7 +11,12 @@ import {
 export class CreateUserDto {
   //#region firstName
   /** User's first name. */
-  @ApiProperty({ minLength: USER_NAME_MIN_LENGTH, maxLength: USER_NAME_MAX_LENGTH })
+  @ApiProperty({
+    description: "User's first name.",
+    example: 'Abdurrahman',
+    minLength: USER_NAME_MIN_LENGTH,
+    maxLength: USER_NAME_MAX_LENGTH,
+  })
   @IsString({ message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }) })
   @MinLength(USER_NAME_MIN_LENGTH, {
     message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }),
@@ -24,7 +29,12 @@ export class CreateUserDto {
 
   //#region lastName
   /** User's last name. */
-  @ApiPropertyOptional({ minLength: USER_NAME_MIN_LENGTH, maxLength: USER_NAME_MAX_LENGTH })
+  @ApiPropertyOptional({
+    description: "User's last name.",
+    example: 'Hafez',
+    minLength: USER_NAME_MIN_LENGTH,
+    maxLength: USER_NAME_MAX_LENGTH,
+  })
   @IsOptional()
   @IsString({ message: i18nValidationMessage('validation.NAME_MIN_LENGTH', { min: USER_NAME_MIN_LENGTH }) })
   @MinLength(USER_NAME_MIN_LENGTH, {
@@ -38,7 +48,11 @@ export class CreateUserDto {
 
   //#region email
   /** User's email address. */
-  @ApiProperty({ example: 'user@example.com' })
+  @ApiProperty({
+    description: 'Email address, used to log in. Must not already be registered.',
+    example: 'user@example.com',
+    format: 'email',
+  })
   @IsEmail({}, { message: i18nValidationMessage('validation.EMAIL_INVALID') })
   email: string;
   //#endregion
@@ -46,8 +60,12 @@ export class CreateUserDto {
   //#region password
   /** User's password; must contain lowercase, uppercase, a number, and a special character. */
   @ApiProperty({
+    description:
+      'Password. Must contain a lowercase letter, an uppercase letter, a number and a special character. ' +
+      'Stored as a bcrypt hash, never in plaintext.',
+    example: 'Str0ng!Passw0rd',
+    format: 'password',
     minLength: USER_PASSWORD_MIN_LENGTH,
-    description: 'Must contain lowercase, uppercase, a number, and a special character',
   })
   @IsString({ message: i18nValidationMessage('validation.PASSWORD_IS_REQUIRED') })
   @MinLength(USER_PASSWORD_MIN_LENGTH, {

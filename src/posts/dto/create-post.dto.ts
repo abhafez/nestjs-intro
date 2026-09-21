@@ -22,20 +22,31 @@ import { PostType } from '../enums/post-type.enum';
 /** Payload for creating a post. */
 export class CreatePostDto {
   /** Post title, at least 4 characters. */
-  @ApiProperty({ minLength: 4 })
+  @ApiProperty({
+    description: 'Post title.',
+    example: 'Getting started with NestJS providers',
+    minLength: 4,
+  })
   @IsString()
   @MinLength(4)
   @IsNotEmpty()
   title: string;
 
   /** Kind of content this post represents. */
-  @ApiProperty({ enum: PostType })
+  @ApiProperty({
+    description: 'Kind of content this post represents.',
+    enum: PostType,
+    example: PostType.POST,
+  })
   @IsEnum(PostType)
   @IsNotEmpty()
   postType: PostType;
 
   /** URL-friendly identifier, e.g. `my-url`. */
-  @ApiProperty({ example: 'my-url', description: 'Lowercase letters and "-" only, no spaces' })
+  @ApiProperty({
+    description: 'URL-friendly identifier: lowercase letters, digits and "-" only, no spaces. Must be unique.',
+    example: 'getting-started-with-nestjs-providers',
+  })
   @IsString()
   @IsNotEmpty()
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
@@ -44,40 +55,57 @@ export class CreatePostDto {
   slug: string;
 
   /** Publication status. */
-  @ApiProperty({ enum: PostStatus })
+  @ApiProperty({
+    description: 'Publication status.',
+    enum: PostStatus,
+    example: PostStatus.DRAFT,
+  })
   @IsEnum(PostStatus)
   @IsNotEmpty()
   status: PostStatus;
 
   /** Body content. */
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    description: 'Body content of the post.',
+    example: 'Providers are the backbone of dependency injection in NestJS...',
+  })
   @IsOptional()
   @IsString()
   content: string;
 
   /** Additional structured data, JSON-encoded. */
-  @ApiPropertyOptional({ description: 'JSON-encoded string' })
+  @ApiPropertyOptional({
+    description: 'Additional structured data as a JSON-encoded string.',
+    example: '{"@context":"https://schema.org","@type":"BlogPosting"}',
+  })
   @IsOptional()
   @IsJSON()
   schema: string;
 
   /** URL of the post's featured image. */
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    description: "URL of the post's featured image.",
+    example: 'https://example.com/images/providers.png',
+  })
   @IsOptional()
   @IsUrl()
   featuredImageUrl: string;
 
   /** Scheduled publish date/time, ISO 8601. */
-  @ApiPropertyOptional({ type: String, format: 'date-time' })
+  @ApiPropertyOptional({
+    description: 'Scheduled publish date/time, ISO 8601.',
+    example: '2026-10-01T08:00:00.000Z',
+    type: String,
+    format: 'date-time',
+  })
   @IsISO8601()
   @IsOptional()
   publishOn: Date;
 
   /** Tag names to associate with the post. */
   @ApiPropertyOptional({
-    description: 'Array of ids of tags',
+    description: 'Ids of existing tags to attach. Every id must exist or the request is rejected.',
     type: [Number],
-    minLength: 3,
     example: [1, 2, 3],
   })
   @IsOptional()
@@ -93,7 +121,10 @@ export class CreatePostDto {
    * is transformed into a `metaValue`-less instance and cascades a null row into
    * `meta_option`.
    */
-  @ApiPropertyOptional({ type: CreatePostMetaOptionsDto })
+  @ApiPropertyOptional({
+    description: 'Single meta option to cascade-insert with the post. An object, never an array.',
+    type: CreatePostMetaOptionsDto,
+  })
   @IsOptional()
   @IsObject()
   @ValidateNested()
@@ -101,9 +132,9 @@ export class CreatePostDto {
   metaOptions?: CreatePostMetaOptionsDto;
 
   @ApiProperty({
+    description: 'Id of the user authoring the post. Must be an existing user.',
     type: 'integer',
-    required: true,
-    example: 1223,
+    example: 1,
   })
   @IsInt()
   @IsNotEmpty()

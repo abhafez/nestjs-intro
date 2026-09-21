@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { GetUserParamsDto } from '../dto/create-user/get-user-params.dto';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { User } from '../user.entity';

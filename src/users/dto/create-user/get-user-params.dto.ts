@@ -6,7 +6,11 @@ import { i18nValidationMessage } from 'nestjs-i18n';
 /** Route params for looking up a single user. */
 export class GetUserParamsDto {
   /** Id of the user to fetch. */
-  @ApiPropertyOptional({ type: Number })
+  @ApiPropertyOptional({
+    description: 'Id of the user to fetch. Omit to list users page by page.',
+    example: 1,
+    type: Number,
+  })
   @Type(() => Number)
   @IsInt({ message: i18nValidationMessage('validation.ID_MUST_BE_NUMERIC') })
   id?: number;
