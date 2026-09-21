@@ -3,8 +3,13 @@ import { CreateMultipleUsersDto } from '../dto/create-user/create-multiple-users
 import { DataSource } from 'typeorm';
 import { User } from '../user.entity';
 
+/** Inserts a batch of users inside a single transaction. */
 @Injectable()
 export class CreateMultipleUsersProvider {
+  /**
+   * Creates the provider.
+   * @param dataSource used to open a query runner for the transaction
+   */
   constructor(
     /**
      * Inject the datasource
@@ -12,6 +17,14 @@ export class CreateMultipleUsersProvider {
     private dataSource: DataSource,
   ) {}
 
+  /**
+   * Creates every user in the batch inside one transaction: if a single row fails,
+   * the whole batch is rolled back.
+   * @param createManyUsersDto the batch of users to insert
+   * @returns the users that were created
+   * @throws RequestTimeoutException when the database cannot be reached or the query runner cannot be released
+   * @throws ConflictException when any row fails and the transaction is rolled back
+   */
   public async createBulkUsers(createManyUsersDto: CreateMultipleUsersDto) {
     let newUsers: User[] = [];
 

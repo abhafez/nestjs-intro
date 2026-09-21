@@ -1,9 +1,11 @@
 import { ConflictException, HttpException, RequestTimeoutException, ServiceUnavailableException } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 
-/** Postgres SQLSTATE codes that map onto a meaningful HTTP response. */
+/** Postgres SQLSTATE for a unique constraint violation. */
 const UNIQUE_VIOLATION = '23505';
+/** Postgres SQLSTATE for a foreign key constraint violation. */
 const FOREIGN_KEY_VIOLATION = '23503';
+/** Postgres SQLSTATE for a NOT NULL constraint violation. */
 const NOT_NULL_VIOLATION = '23502';
 
 /** Driver codes that mean the database was unreachable, not that the query was wrong. */

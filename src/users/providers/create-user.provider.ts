@@ -7,8 +7,14 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user/create-user.dto';
 import { HashingProvider } from '../../auth/providers/hashing.provider';
 
+/** Creates a single user, hashing the password and rejecting duplicate emails. */
 @Injectable()
 export class CreateUserProvider {
+  /**
+   * Creates the provider.
+   * @param hashingProvider hashes the password before it is stored
+   * @param userRepository repository for {@link User}
+   */
   constructor(
     @Inject(forwardRef(() => HashingProvider))
     private readonly hashingProvider: HashingProvider,
@@ -17,6 +23,13 @@ export class CreateUserProvider {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  /**
+   * Creates a user.
+   * @param createUserDto the user to create
+   * @returns the created user
+   * @throws ConflictException when the email is already taken
+   * @throws RequestTimeoutException when the database is unreachable
+   */
   async createUser(createUserDto: CreateUserDto) {
     let existingUser: User | null;
 

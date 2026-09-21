@@ -24,6 +24,7 @@ import databaseConfig from './config/database.config';
 import enviromentValidation from './config/enviroment.validation';
 import { PaginationModule } from '../common/pagination/pagination.module';
 
+/** Current `NODE_ENV`, used to pick which `.env.*` file the config module loads. */
 const ENV = process.env.NODE_ENV;
 
 @Module({

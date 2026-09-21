@@ -18,9 +18,10 @@ export class PostsService {
   /**
    * Creates the service.
    * @param userService used to validate that a post's owner exists
-   * @param tagService
-   * @param postRepository
-   * @param metaOptionRepository
+   * @param tagService used to resolve the tag ids attached to a post
+   * @param paginationProvider turns a query into a paginated response
+   * @param postRepository repository for posts
+   * @param metaOptionRepository repository for meta options
    */
   constructor(
     private readonly userService: UsersService,
@@ -29,9 +30,11 @@ export class PostsService {
 
     private readonly paginationProvider: PaginationProvider,
 
+    /** Repository for {@link Post}. */
     @InjectRepository(Post)
     public readonly postRepository: Repository<Post>,
 
+    /** Repository for {@link MetaOption}. */
     @InjectRepository(MetaOption)
     public readonly metaOptionRepository: Repository<MetaOption>,
   ) {}
@@ -63,6 +66,7 @@ export class PostsService {
   //#region findAll
   /**
    * Lists all posts.
+   * @param query pagination options
    * @throws RequestTimeoutException when the database is unreachable
    */
   async findAll(query: GetPostsDto) {
@@ -78,7 +82,7 @@ export class PostsService {
   /**
    * Lists the posts belonging to a user.
    * @param id user id
-   * @param query
+   * @param query pagination options
    * @throws NotFoundException when the user does not exist
    * @throws RequestTimeoutException when the database is unreachable
    */

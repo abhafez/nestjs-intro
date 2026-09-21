@@ -7,4 +7,6 @@ export default Joi.object({
   DATABASE_HOST: Joi.string().required(),
   DATABASE_NAME: Joi.string().required(),
   DATABASE_USER: Joi.string().required(),
+  JWT_SECRET: Joi.string().required(),
+  JWT_TOKEN: Joi.string().required(),
 });
