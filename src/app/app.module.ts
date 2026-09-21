@@ -33,6 +33,9 @@ const ENV = process.env.NODE_ENV;
       provide: APP_PIPE,
       useValue: new ValidationPipe({
         transform: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
         whitelist: true,
         exceptionFactory: i18nValidationErrorFactory,
       }),
