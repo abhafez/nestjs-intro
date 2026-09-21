@@ -23,6 +23,8 @@ import { PostStatus } from './enums/post-status.enum';
 import { PostType } from './enums/post-type.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { AuthType } from '../auth/enums/auth-type.enum';
+import { ActiveUser } from '../auth/decorators/active-user.decorator';
+import type { ActiveUserData } from '../auth/interfaces/active-user-data.interface';
 
 /** Post CRUD routes. */
 @ApiTags('Posts')
@@ -38,6 +40,7 @@ export class PostsController {
   /**
    * Creates a post.
    * @param createPostDto post data
+   * @param user
    */
   @ApiOperation({
     summary: 'Create a post',
@@ -84,8 +87,8 @@ export class PostsController {
     type: ApiErrorResponseDto,
   })
   @HttpPost()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(@Body() createPostDto: CreatePostDto, @ActiveUser() user: ActiveUserData) {
+    return this.postsService.create(createPostDto, user);
   }
   //#endregion
 

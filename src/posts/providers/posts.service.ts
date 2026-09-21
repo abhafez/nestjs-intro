@@ -11,6 +11,8 @@ import { Tag } from '../../tags/entities/tag.entity';
 import { handleDatabaseError } from '../../app/database/database-error.handler';
 import { GetPostsDto } from '../dto/get-posts.dto';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.provider';
+import { CreatePostProvider } from './create-post.provider';
+import { ActiveUserData } from '../../auth/interfaces/active-user-data.interface';
 
 /** Business logic for posts. */
 @Injectable()
@@ -30,6 +32,8 @@ export class PostsService {
 
     private readonly paginationProvider: PaginationProvider,
 
+    private readonly createPostProvider: CreatePostProvider,
+
     /** Repository for {@link Post}. */
     @InjectRepository(Post)
     public readonly postRepository: Repository<Post>,
@@ -43,23 +47,13 @@ export class PostsService {
   /**
    * Creates a post.
    * @param createPostDto post data
+   * @param user
    * @throws NotFoundException when the author does not exist
    * @throws BadRequestException when one or more of the given tag ids do not exist
    * @throws RequestTimeoutException when the database is unreachable
    */
-  async create(createPostDto: CreatePostDto) {
-    // Both lookups raise their own NotFound/BadRequest, so an invalid author or tag
-    // fails before we write anything.
-    const author = await this.userService.findOneById(createPostDto.authorId);
-    const tags = await this.tagService.findMultipleTags(createPostDto.tags);
-
-    try {
-      const post = this.postRepository.create({ ...createPostDto, author, tags });
-
-      return await this.postRepository.save(post);
-    } catch (error) {
-      handleDatabaseError(error, 'creating the post');
-    }
+  async create(createPostDto: CreatePostDto, user: ActiveUserData) {
+    return this.createPostProvider.create(createPostDto, user);
   }
   //#endregion
 

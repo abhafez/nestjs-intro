@@ -6,6 +6,7 @@ import { Post } from '../post.entity';
 import { MetaOption } from '../../meta-option/entities/meta-option.entity';
 import { TagsService } from '../../tags/providers/tags.service';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.provider';
+import { CreatePostProvider } from './create-post.provider';
 
 describe('PostsService', () => {
   let service: PostsService;
@@ -15,6 +16,7 @@ describe('PostsService', () => {
       providers: [
         PostsService,
         { provide: PaginationProvider, useValue: { paginateQuery: jest.fn() } },
+        { provide: CreatePostProvider, useValue: { create: jest.fn() } },
         { provide: UsersService, useValue: { findOneById: jest.fn() } },
         { provide: TagsService, useValue: { findMultipleTags: jest.fn() } },
         { provide: getRepositoryToken(Post), useValue: {} },
