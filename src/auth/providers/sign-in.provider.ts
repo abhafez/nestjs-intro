@@ -5,6 +5,7 @@ import { SignInDto } from '../dto/signInDto';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../jwt.config';
 import { type ConfigType } from '@nestjs/config';
+import { ActiveUserData } from '../interfaces/active-user-data.interface';
 
 /** Authenticates a user from an email/password pair. */
 @Injectable()
@@ -62,18 +63,17 @@ export class SignInProvider {
       throw new UnauthorizedException('Password does not match');
     }
 
-    const accessToken = await this.jwtService.signAsync(
-      {
-        sub: user.id,
-        email: user.email,
-      },
-      {
-        issuer: this.jwtConfiguration.issuer,
-        secret: this.jwtConfiguration.secret,
-        expiresIn: this.jwtConfiguration.accessTokenTTL,
-        audience: this.jwtConfiguration.audience,
-      },
-    );
+    const payload: ActiveUserData = {
+      sub: user.id,
+      email: user.email,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload, {
+      issuer: this.jwtConfiguration.issuer,
+      secret: this.jwtConfiguration.secret,
+      expiresIn: this.jwtConfiguration.accessTokenTTL,
+      audience: this.jwtConfiguration.audience,
+    });
 
     return { token: accessToken };
   }
