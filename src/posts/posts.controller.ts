@@ -21,6 +21,8 @@ import { ApiErrorResponseDto } from '../common/dto/api-error-response.dto';
 import { ValidationErrorResponseDto } from '../common/dto/validation-error-response.dto';
 import { PostStatus } from './enums/post-status.enum';
 import { PostType } from './enums/post-type.enum';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { AuthType } from '../auth/enums/auth-type.enum';
 
 /** Post CRUD routes. */
 @ApiTags('Posts')
@@ -100,6 +102,7 @@ export class PostsController {
   })
   @ApiPaginatedResponse(Post, 'One page of posts, newest first as stored.')
   @ApiBadRequestResponse({ description: 'A query parameter failed validation.', type: ValidationErrorResponseDto })
+  @Auth(AuthType.None)
   @Get()
   findAll(@Query() postQuery: GetPostsDto) {
     return this.postsService.findAll(postQuery);

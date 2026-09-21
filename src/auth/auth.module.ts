@@ -8,6 +8,8 @@ import { SignInProvider } from './providers/sign-in.provider';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from './jwt.config';
+import { AccessTokenGuard } from './guards/access-token/access-token-guard.service';
+import { AuthenticationGuard } from './guards/authentication/authentication.guard';
 
 @Module({
   controllers: [AuthController],
@@ -19,12 +21,14 @@ import jwtConfig from './jwt.config';
       useClass: BcryptProvider,
     },
     SignInProvider,
+    AccessTokenGuard,
+    AuthenticationGuard,
   ],
   imports: [
     forwardRef(() => UsersModule),
     ConfigModule.forFeature(jwtConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
-  exports: [AuthService, HashingProvider],
+  exports: [AuthService, HashingProvider, AccessTokenGuard, AuthenticationGuard, JwtModule, ConfigModule],
 })
 export class AuthModule {}

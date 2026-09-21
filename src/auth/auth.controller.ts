@@ -1,4 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Auth } from './decorators/auth.decorator';
+import { AuthType } from './enums/auth-type.enum';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -16,6 +18,7 @@ import { ValidationErrorResponseDto } from '../common/dto/validation-error-respo
 
 /** Handles authentication routes. */
 @ApiTags('Auth')
+@Auth(AuthType.None)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

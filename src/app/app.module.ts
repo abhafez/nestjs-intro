@@ -1,5 +1,5 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
@@ -21,8 +21,11 @@ import { MetaOptionModule } from '../meta-option/meta-option.module';
 import { TagsModule } from '../tags/tags.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
-import enviromentValidation from './config/enviroment.validation';
+import environmentValidation from './config/enviroment.validation';
 import { PaginationModule } from '../common/pagination/pagination.module';
+import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from '../auth/jwt.config';
+import { AuthenticationGuard } from '../auth/guards/authentication/authentication.guard';
 
 /** Current `NODE_ENV`, used to pick which `.env.*` file the config module loads. */
 const ENV = process.env.NODE_ENV;
@@ -43,13 +46,17 @@ const ENV = process.env.NODE_ENV;
       }),
     },
     { provide: APP_FILTER, useValue: new I18nValidationExceptionFilter({ errorFormatter: formatValidationErrors }) },
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
+    },
   ],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
       load: [appConfig, databaseConfig],
-      validationSchema: enviromentValidation,
+      validationSchema: environmentValidation,
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -71,6 +78,8 @@ const ENV = process.env.NODE_ENV;
       loaderOptions: { path: join(__dirname, 'i18n'), watch: true },
       resolvers: [AcceptLanguageResolver],
     }),
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
     AuthModule,
     MetaOptionModule,
     PostsModule,

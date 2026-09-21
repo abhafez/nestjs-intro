@@ -8,3 +8,7 @@ export const USER_PASSWORD_MIN_LENGTH = 8;
 export const DEFAULT_PAGE = 1;
 /** Rows per page used when a query omits `limit`. */
 export const DEFAULT_LIMIT = 10;
+/** Request user key */
+export const REQUEST_USER_KEY = 'user';
+/** Metadata key holding the {@link AuthType} list set by the `@Auth` decorator. */
+export const AUTH_TYPE_KEY = 'authType';
