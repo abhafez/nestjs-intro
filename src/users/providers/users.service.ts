@@ -6,6 +6,8 @@ import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dto/create-user/create-user.dto';
 import { handleDatabaseError } from '../../app/database/database-error.handler';
+import { CreateMultipleUsersProvider } from './create-multiple-users.provider';
+import { CreateMultipleUsersDto } from '../dto/create-user/create-multiple-users.dto';
 
 /** Business logic for users. */
 @Injectable()
@@ -18,6 +20,9 @@ export class UsersService {
   constructor(
     @Inject()
     private readonly authService: AuthService,
+
+    @Inject()
+    private readonly createMultipleUsersProvider: CreateMultipleUsersProvider,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -102,6 +107,15 @@ export class UsersService {
     }
 
     return user;
+  }
+  //#endregion
+
+  //#region Bulk create user
+  /**
+   * Creates multiple users using query runner.
+   */
+  public async bulkUsersCreate(bulkUsers: CreateMultipleUsersDto) {
+    this.createMultipleUsersProvider.createBulkUsers(bulkUsers);
   }
   //#endregion
 }

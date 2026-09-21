@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user/create-user.dto';
 import { GetUserParamsDto } from './dto/create-user/get-user-params.dto';
 import { PatchUserDto } from './dto/create-user/patch-user.dto';
 import { UsersService } from './providers/users.service';
+import { CreateMultipleUsersDto } from './dto/create-user/create-multiple-users.dto';
 
 /** User CRUD routes. */
 @ApiTags('Users')
@@ -58,6 +59,17 @@ export class UsersController {
   @Patch(':id')
   public patchUser(@Body() patchUserDto: PatchUserDto) {
     return patchUserDto;
+  }
+  //#endregion
+
+  //#region POST /user/add-bulk
+  /**
+   * Add bulk users.
+   * @param createUserDtos: CreateUserDto[]
+   */
+  @Post('add-bulk')
+  public bulkCreateUsers(@Body() createUserDtos: CreateMultipleUsersDto) {
+    return this.userService.bulkUsersCreate(createUserDtos);
   }
   //#endregion
 }
